@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      { "command": "./hooks/set-workflow-env.sh" }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "./hooks/commit-plan.sh",
+        "timeout": 10
+      }
+    ]
+  }
+}
