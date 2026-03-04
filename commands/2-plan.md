@@ -26,13 +26,14 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 
 ## Tracking
 
-Use `/log` (see `commands/log.md`) to record events. Invoked via = `orchestrator` if called by `/implement-task`, otherwise `standalone`.
+`STARTED` and `COMPLETED`/`FAILED` are logged automatically by hooks for standalone invocations. For orchestrator sub-steps or mid-step events, call the log script via Shell:
 
-- On start: `/log {STORY-ID} 2-plan STARTED {invoked_via}`
-- If stopping for user approval: `/log {STORY-ID} 2-plan WAITING_FOR_USER {invoked_via} "plan presented to user"`
-- On resuming after user approval: `/log {STORY-ID} 2-plan RESUMED {invoked_via} "user approved"`
-- On completion: `/log {STORY-ID} 2-plan COMPLETED {invoked_via} "all gates passed"`
-- On failure: `/log {STORY-ID} 2-plan FAILED {invoked_via} "{error summary}"`
+```bash
+$CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 2-plan {EVENT} {invoked_via} "{notes}"
+```
+
+- If stopping for user approval: log `WAITING_FOR_USER` with note "plan presented to user"
+- On resuming after user approval: log `RESUMED` with note "user approved"
 
 ---
 

@@ -21,7 +21,6 @@ Personal Cursor agentic workflow files: commands, skills, hooks, and auto-commit
 | `/2-plan` | `commands/2-plan.md` | Implementation planning with standards verification |
 | `/3-implement` | `commands/3-implement.md` | Execute a verified plan (branch, code, tests) |
 | `/4-push-pr` | `commands/4-push-pr.md` | Push branch and create GitHub PR |
-| `/log` | `commands/log.md` | Utility — append a tracking event to a story's log |
 | `/github-pr` | `commands/github-pr.md` | Legacy PR command (use `/4-push-pr` instead) |
 
 ## Workflow

@@ -9,6 +9,18 @@
         "command": "./hooks/commit-plan.sh",
         "timeout": 10
       }
+    ],
+    "beforeSubmitPrompt": [
+      {
+        "command": "./hooks/track-start.sh",
+        "timeout": 5
+      }
+    ],
+    "stop": [
+      {
+        "command": "./hooks/track-stop.sh",
+        "timeout": 5
+      }
     ]
   }
 }

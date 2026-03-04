@@ -25,13 +25,14 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 
 ## Tracking
 
-Use `/log` (see `commands/log.md`) to record events. The story ID is extracted from the branch name in step 2. Invoked via = `orchestrator` if called by `/implement-task`, otherwise `standalone`.
+`STARTED` and `COMPLETED`/`FAILED` are logged automatically by hooks for standalone invocations. The story ID is extracted from the branch name in step 2. For orchestrator sub-steps or mid-step events, call the log script via Shell:
 
-- On start (after extracting story ID): `/log {STORY-ID} 4-push-pr STARTED {invoked_via}`
-- If stopping for user input: `/log {STORY-ID} 4-push-pr WAITING_FOR_USER {invoked_via} "uncommitted changes"`
-- On resuming after user input: `/log {STORY-ID} 4-push-pr RESUMED {invoked_via}`
-- On completion: `/log {STORY-ID} 4-push-pr COMPLETED {invoked_via} "PR #{number} created"`
-- On failure: `/log {STORY-ID} 4-push-pr FAILED {invoked_via} "{error summary}"`
+```bash
+$CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 4-push-pr {EVENT} {invoked_via} "{notes}"
+```
+
+- If stopping for user input: log `WAITING_FOR_USER` with note "uncommitted changes"
+- On resuming after user input: log `RESUMED`
 
 ---
 

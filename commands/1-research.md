@@ -26,13 +26,14 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 
 ## Tracking
 
-Use `/log` (see `commands/log.md`) to record events. Invoked via = `orchestrator` if called by `/implement-task`, otherwise `standalone`.
+`STARTED` and `COMPLETED`/`FAILED` are logged automatically by hooks for standalone invocations. For orchestrator sub-steps or mid-step events, call the log script via Shell:
 
-- On start: `/log {STORY-ID} 1-research STARTED {invoked_via}`
-- If stopping for user input: `/log {STORY-ID} 1-research WAITING_FOR_USER {invoked_via} "ambiguous AC flagged"`
-- On resuming after user input: `/log {STORY-ID} 1-research RESUMED {invoked_via}`
-- On completion: `/log {STORY-ID} 1-research COMPLETED {invoked_via} "artifact written"`
-- On failure: `/log {STORY-ID} 1-research FAILED {invoked_via} "{error summary}"`
+```bash
+$CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 1-research {EVENT} {invoked_via} "{notes}"
+```
+
+- If stopping for user input: log `WAITING_FOR_USER` with note "ambiguous AC flagged"
+- On resuming after user input: log `RESUMED`
 
 ---
 
