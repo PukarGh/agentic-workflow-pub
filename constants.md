@@ -26,6 +26,31 @@ The agent determines the **target repo** by matching its current working directo
 | ----------- | -------------------------------------- |
 | Cloud ID    | `00000000-0000-0000-0000-000000000000` |
 | Key Pattern | `(PROJ|TEAM)-\d+`           |
+| Default Spike Project | `PROJ`                         |
+
+
+---
+
+## Confluence
+
+
+| Key                | Value                                  |
+| ------------------ | -------------------------------------- |
+| Cloud ID           | `00000000-0000-0000-0000-000000000000` |
+| Spike Space Key    | `SPACE`                                   |
+| Parent Page ID     | `123456789`                            |
+| Page Title Prefix  | `Spike:`                               |
+
+
+---
+
+## Slack
+
+
+| Key                | Value               |
+| ------------------ | ------------------- |
+| Workspace Label    | `your-org`           |
+| Default Channel ID | ``                  |
 
 
 ---

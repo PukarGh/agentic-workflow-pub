@@ -49,7 +49,7 @@ If missing/invalid, ask the user for the correct issue key and stop.
 
 ## 1) Parallel requirement gathering
 
-Launch two sub-agents concurrently:
+In a single message, launch the following subagents in parallel using the Task tool
 
 ### Sub-agent A: Jira fetch + AC extraction (sections 1–2)
 
