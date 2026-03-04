@@ -1,12 +1,25 @@
-# Create GitHub Pull Request
+# Push and Create Pull Request
 
-Push the current branch and create a GitHub PR enriched with Jira story context.
+Commit changes, push the current branch, and create a GitHub PR enriched with Jira story context and plan details.
 
 ---
 
 ## Usage
 
-- `/github-pr`
+- `/4-push-pr`
+
+---
+
+## Configuration
+
+Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
+- Jira cloud ID and key pattern
+- GitHub org, repo name, and base branch for the active repository
+
+**Repo context:**
+- Resolve the **target repo** from CWD. All git operations (`git push`, `git status`, `git diff`) run in the **target repo**.
+- The GitHub `owner`, `repo`, and `base` branch for the PR are read from the matched repository entry in `constants.md`.
+- Plan artifacts (for PR enrichment) are read from `$CURSOR_WORKFLOWS_REPO/artifacts/...` (the **workflows repo**).
 
 ---
 
@@ -32,7 +45,15 @@ If the branch does **not** match, **STOP immediately** and output:
 
 ---
 
-## 2) Check for uncommitted changes
+## 2) Extract story ID
+
+Extract the Jira story ID from the branch name using the key pattern from `constants.md`.
+
+Example: from `chore-PROJ-123-implement-something`, extract `PROJ-123`.
+
+---
+
+## 3) Check for uncommitted changes
 
 Run:
 
@@ -46,11 +67,11 @@ If the output is **non-empty** (there are uncommitted changes):
 - Wait for the user's response before continuing.
 - If the user wants to commit first, stop and let them handle the commit.
 
-If the output is empty, continue to step 3.
+If the output is empty, continue to step 4.
 
 ---
 
-## 3) Push branch to origin
+## 4) Push branch to origin
 
 Push the current branch to the remote:
 
@@ -62,20 +83,12 @@ If the push fails, report the error and **STOP**.
 
 ---
 
-## 4) Extract story ID and fetch Jira details
-
-### 4.1 Extract story ID from branch name
-
-Extract the Jira story ID from the branch name using the regex pattern `([A-Z]+-\d+)`.
-
-Example: from `chore-PROJ-123-implement-something`, extract `PROJ-123`.
-
-### 4.2 Fetch Jira issue details
+## 5) Fetch Jira details
 
 Call Atlassian MCP:
 - Tool: `getJiraIssue`
 - Args:
-  - `cloudId`: `00000000-0000-0000-0000-000000000000`
+  - `cloudId`: from `constants.md`
   - `issueIdOrKey`: the extracted story ID (e.g., `PROJ-123`)
   - `fields`: `["summary", "description", "issuetype"]`
 
@@ -88,15 +101,29 @@ If the Jira issue cannot be fetched, warn the user but continue — use the stor
 
 ---
 
-## 5) Analyze changed files
+## 6) Load plan artifact (if available)
 
-### 5.1 Determine base branch
+Look for the most recent plan artifact at:
 
-```bash
-base=$(git rev-parse --verify origin/development >/dev/null 2>&1 && echo origin/development || echo origin/main)
+```
+$CURSOR_WORKFLOWS_REPO/artifacts/{STORY-ID}/YYYY-MM-DD-plan.md
 ```
 
-### 5.2 Gather diff context
+If found, use the plan summary and AC mapping table to enrich the PR description. If not found, proceed without it.
+
+---
+
+## 7) Analyze changed files
+
+### 7.1 Determine base branch
+
+Use the base branch from `constants.md` for the active repository.
+
+```bash
+base=$(git rev-parse --verify origin/{BASE_BRANCH} >/dev/null 2>&1 && echo origin/{BASE_BRANCH} || echo origin/main)
+```
+
+### 7.2 Gather diff context
 
 Run all of:
 
@@ -106,20 +133,18 @@ git diff --name-only "$base"...HEAD
 git log --oneline "$base"..HEAD
 ```
 
-### 5.3 Summarize changes
+### 7.3 Summarize changes
 
 From the diff output, build a concise summary of:
 - Which files/modules changed
 - What the changes accomplish (map them to the Jira story context)
 - How the task was implemented at a high level
 
-This summary will be used in the PR description.
-
 ---
 
-## 6) Create the pull request
+## 8) Create the pull request
 
-### 6.1 Derive the PR title prefix
+### 8.1 Derive the PR title prefix
 
 Map the branch prefix to the conventional commit prefix:
 
@@ -134,36 +159,38 @@ If the branch prefix doesn't map cleanly, fall back to the Jira issue type:
 - `Story` / `Task` → `feat`
 - Anything else → `chore`
 
-### 6.2 Construct PR title
+### 8.2 Construct PR title
 
 Format: `{prefix}: {STORY-ID} {Story Title}`
 
 Example: `feat: PROJ-123 Add new maintenance log`
 
-### 6.3 Construct PR description
+### 8.3 Construct PR description
 
 Use this format:
 
 ```
 ## Proposed change/fix
-{Concise summary of what this PR does, based on the Jira story context and the analyzed file changes from step 5.3. Explain what was changed and why.}
+{Concise summary of what this PR does, based on the Jira story context and the analyzed file changes from step 7.3. Explain what was changed and why. If a plan artifact was loaded, incorporate the plan summary.}
 
 ## How to run/test
 {Provide actionable steps for testing this change. Derive these from the Jira story acceptance criteria and the nature of the changes. Include specific pages to visit, actions to perform, and expected outcomes.}
 ```
 
-### 6.4 Create PR via GitHub MCP
+### 8.4 Create PR via GitHub MCP
+
+Read the GitHub org, repo name, and base branch from `constants.md`.
 
 Call GitHub MCP:
 - Tool: `create_pull_request`
 - Args:
-  - `owner`: `your-org`
-  - `repo`: `web-app`
+  - `owner`: from `constants.md` (GitHub org)
+  - `repo`: from `constants.md` (active repo name)
   - `head`: current branch name
-  - `base`: `development`
-  - `title`: constructed PR title from 6.2
-  - `body`: constructed PR description from 6.3
+  - `base`: from `constants.md` (base branch)
+  - `title`: constructed PR title from 8.2
+  - `body`: constructed PR description from 8.3
 
-### 6.5 Output result
+### 8.5 Output result
 
 After the PR is created, output the PR URL and title to the user.

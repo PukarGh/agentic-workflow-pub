@@ -22,5 +22,13 @@ if [[ "$file_path" == "$WORKFLOWS_REPO/plans/"* ]]; then
   fi
   filename=$(basename "$file_path")
   git commit -m "Add/update plan: $filename" --no-verify
+elif [[ "$file_path" == "$WORKFLOWS_REPO/artifacts/"* ]]; then
+  cd "$WORKFLOWS_REPO" || exit 0
+  git add artifacts/
+  if git diff --staged --quiet; then
+    exit 0
+  fi
+  filename=$(basename "$file_path")
+  git commit -m "Add/update artifact: $filename" --no-verify
 fi
 exit 0
