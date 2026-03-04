@@ -23,6 +23,16 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 
 ---
 
+## Tracking
+
+Use `/log` (see `commands/log.md`) to record events. Invoked via = `orchestrator` if called by `/implement-task`, otherwise `standalone`.
+
+- On start: `/log {STORY-ID} 3-implement STARTED {invoked_via}`
+- On completion: `/log {STORY-ID} 3-implement COMPLETED {invoked_via} "{files changed, tests added}"`
+- On failure: `/log {STORY-ID} 3-implement FAILED {invoked_via} "{error summary}"`
+
+---
+
 ## 0) Load plan artifact
 
 Look for the most recent plan artifact at:

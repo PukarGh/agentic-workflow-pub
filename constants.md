@@ -50,6 +50,7 @@ Artifact paths are relative to the **workflows repo** (`$CURSOR_WORKFLOWS_REPO`)
 | Base Directory | `$CURSOR_WORKFLOWS_REPO/artifacts/`               |
 | Requirements   | `artifacts/{STORY-ID}/YYYY-MM-DD-requirements.md` |
 | Plan           | `artifacts/{STORY-ID}/YYYY-MM-DD-plan.md`         |
+| Tracking       | `artifacts/{STORY-ID}/tracking.md`                 |
 
 
 ---

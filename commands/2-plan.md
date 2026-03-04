@@ -24,6 +24,18 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 
 ---
 
+## Tracking
+
+Use `/log` (see `commands/log.md`) to record events. Invoked via = `orchestrator` if called by `/implement-task`, otherwise `standalone`.
+
+- On start: `/log {STORY-ID} 2-plan STARTED {invoked_via}`
+- If stopping for user approval: `/log {STORY-ID} 2-plan WAITING_FOR_USER {invoked_via} "plan presented to user"`
+- On resuming after user approval: `/log {STORY-ID} 2-plan RESUMED {invoked_via} "user approved"`
+- On completion: `/log {STORY-ID} 2-plan COMPLETED {invoked_via} "all gates passed"`
+- On failure: `/log {STORY-ID} 2-plan FAILED {invoked_via} "{error summary}"`
+
+---
+
 ## 0) Load requirements artifact
 
 Look for the most recent requirements artifact at:

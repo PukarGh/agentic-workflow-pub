@@ -24,6 +24,18 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 
 ---
 
+## Tracking
+
+Use `/log` (see `commands/log.md`) to record events. Invoked via = `orchestrator` if called by `/implement-task`, otherwise `standalone`.
+
+- On start: `/log {STORY-ID} 1-research STARTED {invoked_via}`
+- If stopping for user input: `/log {STORY-ID} 1-research WAITING_FOR_USER {invoked_via} "ambiguous AC flagged"`
+- On resuming after user input: `/log {STORY-ID} 1-research RESUMED {invoked_via}`
+- On completion: `/log {STORY-ID} 1-research COMPLETED {invoked_via} "artifact written"`
+- On failure: `/log {STORY-ID} 1-research FAILED {invoked_via} "{error summary}"`
+
+---
+
 ## 0) Input validation (fail fast)
 
 Validate the provided Jira key:

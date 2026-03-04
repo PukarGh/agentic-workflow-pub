@@ -23,6 +23,18 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 
 ---
 
+## Tracking
+
+Use `/log` (see `commands/log.md`) to record events. The story ID is extracted from the branch name in step 2. Invoked via = `orchestrator` if called by `/implement-task`, otherwise `standalone`.
+
+- On start (after extracting story ID): `/log {STORY-ID} 4-push-pr STARTED {invoked_via}`
+- If stopping for user input: `/log {STORY-ID} 4-push-pr WAITING_FOR_USER {invoked_via} "uncommitted changes"`
+- On resuming after user input: `/log {STORY-ID} 4-push-pr RESUMED {invoked_via}`
+- On completion: `/log {STORY-ID} 4-push-pr COMPLETED {invoked_via} "PR #{number} created"`
+- On failure: `/log {STORY-ID} 4-push-pr FAILED {invoked_via} "{error summary}"`
+
+---
+
 ## 1) Validate implementation branch
 
 Get the current branch name:

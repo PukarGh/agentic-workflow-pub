@@ -20,6 +20,16 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for Jira key pattern and artifact pat
 
 ---
 
+## Tracking
+
+Use `/log` (see `commands/log.md`) to record events. Each sub-command also logs its own events with invoked via `orchestrator`.
+
+- On start: `/log {STORY-ID} implement-task STARTED standalone`
+- On completion: `/log {STORY-ID} implement-task COMPLETED standalone`
+- On failure or user abort: `/log {STORY-ID} implement-task FAILED standalone "{reason}"`
+
+---
+
 ## 0) Input validation (fail fast)
 
 Validate the provided Jira key:
