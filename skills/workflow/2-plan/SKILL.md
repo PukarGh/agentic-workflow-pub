@@ -1,3 +1,9 @@
+---
+name: 2-plan
+description: Plan Implementation — Standards-Compliant Design
+disable-model-invocation: true
+---
+
 # Plan Implementation — Standards-Compliant Design
 
 Create a verified implementation plan for a Jira story based on previously gathered requirements. The plan is validated against the target repo's coding, security, and quality standards before being presented to the user.

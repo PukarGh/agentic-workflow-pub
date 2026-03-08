@@ -1,3 +1,9 @@
+---
+name: 1-research
+description: Research Jira Story — Requirement Analysis
+disable-model-invocation: true
+---
+
 # Research Jira Story — Requirement Analysis
 
 Gather and normalize all requirements for a Jira story by fetching issue details, extracting acceptance criteria, and scanning the target codebase for structural context. Outputs a requirements artifact for downstream commands.

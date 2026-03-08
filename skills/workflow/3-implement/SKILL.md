@@ -1,3 +1,9 @@
+---
+name: 3-implement
+description: Implement Plan — Execute Verified Implementation
+disable-model-invocation: true
+---
+
 # Implement Plan — Execute Verified Implementation
 
 Execute a previously verified implementation plan for a Jira story. Handles branch management, optional Figma design extraction, AC-ordered implementation, test writing, and verification.

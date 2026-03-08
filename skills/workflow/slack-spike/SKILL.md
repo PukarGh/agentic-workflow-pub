@@ -1,3 +1,9 @@
+---
+name: slack-spike
+description: Slack to Spike
+disable-model-invocation: true
+---
+
 # Slack to Spike
 
 Read a Slack message via Slack MCP, run preliminary research, present a brief recommended response, and ask whether deeper research plus Confluence documentation is needed. If approved, create a Confluence spike page and optionally a Jira follow-up card linked to that page.

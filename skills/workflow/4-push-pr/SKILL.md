@@ -1,3 +1,9 @@
+---
+name: 4-push-pr
+description: Push and Create Pull Request
+disable-model-invocation: true
+---
+
 # Push and Create Pull Request
 
 Commit changes, push the current branch, and create a GitHub PR enriched with Jira story context and plan details.

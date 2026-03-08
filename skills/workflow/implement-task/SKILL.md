@@ -1,3 +1,9 @@
+---
+name: implement-task
+description: Implement Jira Story — Orchestrator
+disable-model-invocation: true
+---
+
 # Implement Jira Story — Orchestrator
 
 End-to-end orchestrator that chains requirement analysis, planning, implementation, and PR creation for a Jira story. Each step is a standalone command that can also be invoked individually.
