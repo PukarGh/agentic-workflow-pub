@@ -1,5 +1,5 @@
 ---
-name: 4-push-pr
+name: 5-push-pr
 description: Push and Create Pull Request
 disable-model-invocation: true
 ---
@@ -12,7 +12,7 @@ Commit changes, push the current branch, and create a GitHub PR enriched with Ji
 
 ## Usage
 
-- `/4-push-pr`
+- `/5-push-pr`
 
 ---
 
@@ -34,7 +34,7 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 `STARTED` and `COMPLETED`/`FAILED` are logged automatically by hooks for standalone invocations. The story ID is extracted from the branch name in step 2. For orchestrator sub-steps or mid-step events, call the log script via Shell:
 
 ```bash
-$CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 4-push-pr {EVENT} {invoked_via} "{notes}"
+$CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 5-push-pr {EVENT} {invoked_via} "{notes}"
 ```
 
 - If stopping for user input: log `WAITING_FOR_USER` with note "uncommitted changes"

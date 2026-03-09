@@ -168,6 +168,6 @@ Tests:         PASS
 
 Ask:
 
-> "All AC items implemented and verified. Ready to push and create a PR? Run `/4-push-pr` to proceed."
+> "All AC items implemented and verified. Ready to review? Run `/4-review {STORY-ID}` to proceed."
 
 Do NOT commit or push from this command.

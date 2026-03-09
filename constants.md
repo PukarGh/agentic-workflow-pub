@@ -75,6 +75,7 @@ Artifact paths are relative to the **workflows repo** (`$CURSOR_WORKFLOWS_REPO`)
 | Base Directory | `$CURSOR_WORKFLOWS_REPO/artifacts/`               |
 | Requirements   | `artifacts/{STORY-ID}/YYYY-MM-DD-requirements.md` |
 | Plan           | `artifacts/{STORY-ID}/YYYY-MM-DD-plan.md`         |
+| Review         | `artifacts/{STORY-ID}/YYYY-MM-DD-review.md`       |
 | Tracking       | `artifacts/{STORY-ID}/tracking.md`                 |
 
 
@@ -115,5 +116,6 @@ All **Cursor Rules** paths and **Verification Commands** paths listed under each
 | Verify AC      | `.cursor/commands/verify-ac.md`      |
 | Code Quality   | `.cursor/commands/code-quality.md`   |
 | Security Audit | `.cursor/commands/security-audit.md` |
+| Pre-PR Review  | `.cursor/commands/pre-pr-review.md`  |
 
 

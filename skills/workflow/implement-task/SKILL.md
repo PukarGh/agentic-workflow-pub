@@ -95,16 +95,36 @@ This step:
 
 **After completion:** Present the implementation summary to the user.
 
-> "All AC items implemented and verified. Ready to push and create a PR?"
+> "All AC items implemented and verified. Ready to review?"
 
 - If the user says **no** → stop and wait for further instructions.
 - If the user says **yes** → proceed to step 4.
 
 ---
 
-## 4) Push and PR
+## 4) Review — Pre-PR Code Review
 
-Execute the `/4-push-pr` command (see `commands/4-push-pr.md`).
+Execute the `/4-review {STORY-ID}` command (see `skills/workflow/4-review/SKILL.md`).
+
+This step:
+- Launches parallel review subagents (pre-PR rule check, Coderabbit, tech-lead review)
+- Performs a self-review pass
+- Synthesizes findings into a unified verdict
+- Writes the review artifact to `artifacts/{STORY-ID}/YYYY-MM-DD-review.md`
+
+**After completion:** Present the review verdict to the user.
+
+- If verdict is **READY FOR PR** → proceed to step 5.
+- If verdict is **NEEDS ATTENTION** → ask the user whether to proceed or fix issues first.
+  - If the user wants to proceed → continue to step 5.
+  - If the user wants to fix → stop and wait for further instructions. After fixes, re-run `/4-review {STORY-ID}`.
+- If verdict is **NOT READY** → stop and instruct the user to fix critical issues and re-run `/4-review {STORY-ID}`.
+
+---
+
+## 5) Push and PR
+
+Execute the `/5-push-pr` command (see `skills/workflow/5-push-pr/SKILL.md`).
 
 This step:
 - Validates the branch name

@@ -26,8 +26,10 @@ elif echo "$prompt" | grep -q "Plan Implementation"; then
   command_name="2-plan"
 elif echo "$prompt" | grep -q "Implement Plan"; then
   command_name="3-implement"
+elif echo "$prompt" | grep -q "Review Implementation"; then
+  command_name="4-review"
 elif echo "$prompt" | grep -q "Push and Create Pull Request"; then
-  command_name="4-push-pr"
+  command_name="5-push-pr"
 elif echo "$prompt" | grep -q "Implement Jira Story — Orchestrator"; then
   command_name="implement-task"
 fi
