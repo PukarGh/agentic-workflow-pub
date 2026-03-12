@@ -28,10 +28,11 @@ Personal Cursor agentic workflow files: commands, skills, hooks, and auto-commit
 Each command can be invoked standalone or chained via the orchestrator:
 
 ```
-/1-research PROJ-123  →  artifacts/{STORY-ID}/YYYY-MM-DD-requirements.md
-/2-plan PROJ-123      →  artifacts/{STORY-ID}/YYYY-MM-DD-plan.md
-/3-implement PROJ-123 →  code changes (no commit)
-/4-push-pr           →  push + GitHub PR
+/1-research PROJ-123      →  artifacts/{STORY-ID}/YYYY-MM-DD-requirements.md
+/2-plan PROJ-123          →  artifacts/{STORY-ID}/YYYY-MM-DD-plan.md
+/3-implement PROJ-123     →  code changes (no commit)
+/4-push-pr               →  push + GitHub PR
+/6-work-summary PROJ-123  →  work summary posted to Jira (auto-runs after push-pr)
 ```
 
 Or run everything at once: `/implement-task PROJ-123`

@@ -132,4 +132,21 @@ This step:
 - Pushes the branch to origin
 - Creates a GitHub PR with Jira context and plan details
 
-**After completion:** Output the PR URL to the user.
+**After completion:** Output the PR URL to the user, then **automatically proceed to step 6**.
+
+---
+
+## 6) Work Summary
+
+Execute the `/6-work-summary {STORY-ID}` command (see `skills/workflow/6-work-summary/SKILL.md`).
+
+This step runs **automatically** after the PR is created — no user prompt needed to start it.
+
+This step:
+- Fetches Jira story details and loads artifacts (requirements, plan, review)
+- Gathers git context (diff, changed files, commit history)
+- Generates a structured work summary based on issue type (Bug, Feature, Spike, Task)
+- Presents the summary to the user for verification
+- Posts the approved summary as a comment on the Jira ticket
+
+**After completion:** Confirm the work summary has been posted to Jira.
