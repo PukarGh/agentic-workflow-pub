@@ -39,14 +39,33 @@ gh pr diff <PR_NUMBER> --repo <owner>/<repo>
 
 ### 1.3 — Fetch review comments (threaded code comments)
 
+Use a **two-pass approach** to avoid response truncation:
+
+**Pass 1 — Inventory.** Fetch a lightweight listing of all review comments using `--jq` projection. This prevents large comment bodies (containing HTML, diffs, suggestions) from causing output truncation:
+
 ```bash
-gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments --paginate
+gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments --paginate \
+  --jq '.[] | {id, path, line: .original_line, start_line: .original_start_line, user: .user.login, in_reply_to_id, review_id: .pull_request_review_id}'
+```
+
+**Pass 2 — Bodies.** After filtering (Step 1.5), fetch the full body for each comment that needs classification:
+
+```bash
+gh api repos/<owner>/<repo>/pulls/comments/<COMMENT_ID> --jq '{id, path, line: .original_line, user: .user.login, body}'
+```
+
+If the number of filtered comments is small (≤ 10), you may batch them:
+
+```bash
+gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments --paginate \
+  --jq '[.[] | select(.in_reply_to_id == null and .user.login != "<CURRENT_USER>") | {id, path, line: .original_line, start_line: .original_start_line, user: .user.login, body, review_id: .pull_request_review_id}]'
 ```
 
 ### 1.4 — Fetch issue comments (general PR comments)
 
 ```bash
-gh api repos/<owner>/<repo>/issues/<PR_NUMBER>/comments --paginate
+gh api repos/<owner>/<repo>/issues/<PR_NUMBER>/comments --paginate \
+  --jq '[.[] | {id, user: .user.login, body}]'
 ```
 
 ### 1.5 — Filter comments
@@ -55,8 +74,36 @@ From all fetched comments, keep only those that are:
 
 - **Unresolved** (not part of a resolved review thread)
 - **Not authored by the current user** — determine current user via `gh api user --jq '.login'`
+- **Top-level comments only** — exclude replies (`in_reply_to_id` is null) since replies are part of existing threads
 
 If the user provided a **comment URL**, filter down to just that comment/thread and its context.
+
+If the user provided a **review URL** (containing a review ID), filter to only comments belonging to that review:
+
+```bash
+gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments --paginate \
+  --jq '[.[] | select(.pull_request_review_id == <REVIEW_ID> and .in_reply_to_id == null) | {id, path, line: .original_line, user: .user.login, body}]'
+```
+
+### 1.6 — Verify comment count
+
+**This step is mandatory.** After filtering, verify you have captured all comments by running a count query:
+
+```bash
+gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments --paginate \
+  --jq '[.[] | select(.in_reply_to_id == null and .user.login != "<CURRENT_USER>")] | length'
+```
+
+Compare this count against the number of comments you classified. If there is a mismatch, re-fetch with narrower `--jq` projections or fetch missing comments individually by ID. **Never proceed to classification with an incomplete dataset.**
+
+### 1.7 — Handle truncated output
+
+If any API response shows signs of truncation (e.g., `output truncated` in tool output, malformed JSON, or unexpected end of data):
+
+1. **Do NOT classify from truncated data.** You will miss comments.
+2. Re-fetch using `--jq` projections to reduce payload size.
+3. If projections still result in truncation, fetch comments in smaller batches (e.g., per-page with `--jq` and `?per_page=10`).
+4. As a last resort, fetch each comment individually by ID from the inventory list.
 
 ## Step 2: Gather Project Context
 
@@ -185,7 +232,7 @@ For each selected question:
 4. Post the reply using:
 
 ```bash
-gh api repos/<owner>/<repo>/pulls/comments/<comment_id>/replies -f body="<response>"
+gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f body="<response>"
 ```
 
 For general (non-review) comments, reply with:
@@ -221,7 +268,7 @@ Run type-checks and linters on changed files. Fix any issues introduced.
 Post a reply:
 
 ```bash
-gh api repos/<owner>/<repo>/pulls/comments/<comment_id>/replies -f body="Addressed — <brief description of what was changed>."
+gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f body="Addressed — <brief description of what was changed>."
 ```
 
 **Fallback**: Use GitHub MCP `add_reply_to_pull_request_comment` if `gh` fails.
@@ -234,7 +281,7 @@ For each selected out-of-scope item classified as **Critical** or **Recommended*
 2. **Reply to the PR comment**:
 
 ```bash
-gh api repos/<owner>/<repo>/pulls/comments/<comment_id>/replies -f body="Valid point — this is out of scope for this PR. Created a separate issue to track this."
+gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f body="Valid point — this is out of scope for this PR. Created a separate issue to track this."
 ```
 
 **Fallback**: Use GitHub MCP `add_reply_to_pull_request_comment` if `gh` fails.
@@ -248,7 +295,7 @@ For any out-of-scope **Good to Have** or **Nitpick** items, or in-scope **Nitpic
 - Never be dismissive. Never be verbose. 1–3 sentences.
 
 ```bash
-gh api repos/<owner>/<repo>/pulls/comments/<comment_id>/replies -f body="<response>"
+gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f body="<response>"
 ```
 
 **Fallback**: Use GitHub MCP `add_reply_to_pull_request_comment` if `gh` fails.
@@ -297,3 +344,7 @@ Use this format for the summary:
 6. **Treat the project's coding standards and rules as ground truth** for severity classification. If a reviewer flags something the standards explicitly call a FAIL, it's Critical regardless of your opinion.
 7. **Keep all replies professional, concise, and technically grounded.** 1–3 sentences max.
 8. **Use `gh` CLI as the primary tool.** Only fall back to GitHub MCP if `gh` is unavailable or errors.
+9. **Always use `--jq` projections when fetching comments.** Never fetch raw JSON without projection — comment bodies contain HTML, diffs, and suggestions that cause output truncation.
+10. **Never classify from truncated data.** If output is truncated, re-fetch with narrower projections or fetch comments individually before proceeding.
+11. **Always verify comment count** (Step 1.6) before classification. A mismatch means comments were missed.
+12. **Always use the PR-scoped reply endpoint.** The correct format is `repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies`, not `repos/<owner>/<repo>/pulls/comments/<comment_id>/replies`.
