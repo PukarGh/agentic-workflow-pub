@@ -239,10 +239,20 @@ Combine outputs from both sub-agents into a single requirements document.
 
 ## 3) Write requirements artifact
 
-Write the merged output to:
+Determine the artifact directory:
 
 ```
-$HOME/agentic-workflow/artifacts/{STORY-ID}-{slugified-story-title}/YYYY-MM-DD-requirements.md
+$HOME/agentic-workflow/artifacts/{STORY-ID}-{slugified-story-title}/
+```
+
+**Before writing**, check if a `*-requirements*.md` file already exists in the directory. If it does, **do not overwrite or modify it**. Instead, create a new file with a ` - pass N` suffix (see `constants.md` → Multi-pass naming for the convention).
+
+Write the output to:
+
+```
+YYYY-MM-DD-requirements.md            ← first pass (no existing file)
+YYYY-MM-DD-requirements - pass 2.md   ← second pass
+YYYY-MM-DD-requirements - pass 3.md   ← third pass, etc.
 ```
 
 The artifact must contain:

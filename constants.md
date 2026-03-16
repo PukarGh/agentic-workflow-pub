@@ -78,6 +78,20 @@ Artifact paths are relative to the **workflows repo** (`$HOME/agentic-workflow`)
 | Review         | `artifacts/{STORY-ID}/YYYY-MM-DD-review.md`       |
 | Tracking       | `artifacts/{STORY-ID}/tracking.md`                 |
 
+### Multi-pass naming
+
+When writing an artifact, **never overwrite or modify an existing file**. Before writing, check if a file matching the base name already exists in the artifact directory (regardless of date prefix). If it does, append ` - pass N` before the `.md` extension, where `N` is the next sequential pass number.
+
+| Pass | Filename example                         |
+| ---- | ---------------------------------------- |
+| 1st  | `YYYY-MM-DD-review.md` (no suffix)      |
+| 2nd  | `YYYY-MM-DD-review - pass 2.md`         |
+| 3rd  | `YYYY-MM-DD-review - pass 3.md`         |
+
+To determine `N`: count files in the artifact directory whose names end with the same base name (e.g. `*-review*.md`). If the count is 0, use the base name. Otherwise, `N = count + 1`.
+
+This applies to all artifact types: `requirements`, `plan`, and `review`. It does **not** apply to `tracking.md` (which is append-only).
+
 
 ---
 

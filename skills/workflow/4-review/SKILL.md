@@ -182,10 +182,16 @@ Before producing a verdict, perform a manual self-review:
 
 ## 3) Write review artifact
 
+Determine the artifact directory (use the first directory matching `{STORY-ID}*` under `artifacts/`).
+
+**Before writing**, check if a `*-review*.md` file already exists in the directory. If it does, **do not overwrite or modify it**. Instead, create a new file with a ` - pass N` suffix (see `constants.md` → Multi-pass naming for the convention).
+
 Write the review results to:
 
 ```
-$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-review.md
+YYYY-MM-DD-review.md            ← first pass (no existing file)
+YYYY-MM-DD-review - pass 2.md   ← second pass
+YYYY-MM-DD-review - pass 3.md   ← third pass, etc.
 ```
 
 The artifact must contain:
