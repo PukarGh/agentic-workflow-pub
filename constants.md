@@ -4,7 +4,7 @@ Central configuration referenced by all workflow commands.
 
 Two repos are involved in every workflow run:
 
-- **Workflows repo** (`$CURSOR_WORKFLOWS_REPO` / `agentic-workflow`) — where commands, constants, and artifacts live.
+- **Workflows repo** (`$HOME/agentic-workflow` / `agentic-workflow`) — where commands, constants, and artifacts live.
 - **Target repo** (e.g. `web-app`) — where code changes, git operations, rules files, and verification commands live.
 
 ---
@@ -68,11 +68,11 @@ The agent determines the **target repo** by matching its current working directo
 
 ## Artifacts
 
-Artifact paths are relative to the **workflows repo** (`$CURSOR_WORKFLOWS_REPO`), not the target repo.
+Artifact paths are relative to the **workflows repo** (`$HOME/agentic-workflow`), not the target repo.
 
 | Key            | Value                                             |
 | -------------- | ------------------------------------------------- |
-| Base Directory | `$CURSOR_WORKFLOWS_REPO/artifacts/`               |
+| Base Directory | `$HOME/agentic-workflow/artifacts/`               |
 | Requirements   | `artifacts/{STORY-ID}/YYYY-MM-DD-requirements.md` |
 | Plan           | `artifacts/{STORY-ID}/YYYY-MM-DD-plan.md`         |
 | Review         | `artifacts/{STORY-ID}/YYYY-MM-DD-review.md`       |

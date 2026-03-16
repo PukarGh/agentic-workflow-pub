@@ -13,12 +13,13 @@ Gather and normalize all requirements for a Jira story by fetching issue details
 ## Usage
 
 - `/1-research PROJ-123`
+- `/1-research` (omit story ID to auto-detect from the current branch name)
 
 ---
 
 ## Configuration
 
-Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
+Read `$HOME/agentic-workflow/constants.md` for:
 
 - Jira cloud ID and key pattern
 - Active repository rules and paths
@@ -26,7 +27,7 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 **Repo context:**
 
 - Resolve the **target repo** by matching CWD against repository `Local Path` entries in `constants.md`. All git commands and codebase scans run in the **target repo**.
-- Artifacts are written to `$CURSOR_WORKFLOWS_REPO/artifacts/...` (the **workflows repo**).
+- Artifacts are written to `$HOME/agentic-workflow/artifacts/...` (the **workflows repo**).
 
 ---
 
@@ -35,7 +36,7 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 `STARTED` and `COMPLETED`/`FAILED` are logged automatically by hooks for standalone invocations. For orchestrator sub-steps or mid-step events, call the log script via Shell:
 
 ```bash
-$CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 1-research {EVENT} {invoked_via} "{notes}"
+$HOME/agentic-workflow/hooks/log.sh {STORY-ID} 1-research {EVENT} {invoked_via} "{notes}"
 ```
 
 - If stopping for user input: log `WAITING_FOR_USER` with note "ambiguous AC flagged"
@@ -45,11 +46,27 @@ $CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 1-research {EVENT} {invoked_via} 
 
 ## 0) Input validation (fail fast)
 
-Validate the provided Jira key:
+### 0.1 Resolve story ID
+
+If a Jira key was provided as an argument, use it directly.
+
+If **no** Jira key was provided, attempt to extract it from the current git branch name:
+
+```bash
+currentBranch=$(git rev-parse --abbrev-ref HEAD)
+```
+
+Match the branch name against the key pattern from `constants.md` (e.g. `(PROJ|TEAM)-\d+`). Use the first match as the story ID.
+
+If extraction fails (branch doesn't contain a recognizable key), ask the user for the correct issue key and stop.
+
+### 0.2 Validate key format
+
+Validate the resolved Jira key:
 
 - Must match the key pattern from `constants.md` (e.g. `(PROJ|TEAM)-\d+`)
 
-If missing/invalid, ask the user for the correct issue key and stop.
+If invalid, ask the user for the correct issue key and stop.
 
 ---
 
@@ -225,7 +242,7 @@ Combine outputs from both sub-agents into a single requirements document.
 Write the merged output to:
 
 ```
-$CURSOR_WORKFLOWS_REPO/artifacts/{STORY-ID}-{slugified-story-title}/YYYY-MM-DD-requirements.md
+$HOME/agentic-workflow/artifacts/{STORY-ID}-{slugified-story-title}/YYYY-MM-DD-requirements.md
 ```
 
 The artifact must contain:

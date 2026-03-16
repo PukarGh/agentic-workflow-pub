@@ -18,14 +18,14 @@ Commit changes, push the current branch, and create a GitHub PR enriched with Ji
 
 ## Configuration
 
-Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
+Read `$HOME/agentic-workflow/constants.md` for:
 - Jira cloud ID and key pattern
 - GitHub org, repo name, and base branch for the active repository
 
 **Repo context:**
 - Resolve the **target repo** from CWD. All git operations (`git push`, `git status`, `git diff`) run in the **target repo**.
 - The GitHub `owner`, `repo`, and `base` branch for the PR are read from the matched repository entry in `constants.md`.
-- Plan artifacts (for PR enrichment) are read from `$CURSOR_WORKFLOWS_REPO/artifacts/...` (the **workflows repo**).
+- Plan artifacts (for PR enrichment) are read from `$HOME/agentic-workflow/artifacts/...` (the **workflows repo**).
 
 ---
 
@@ -34,7 +34,7 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 `STARTED` and `COMPLETED`/`FAILED` are logged automatically by hooks for standalone invocations. The story ID is extracted from the branch name in step 2. For orchestrator sub-steps or mid-step events, call the log script via Shell:
 
 ```bash
-$CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 5-push-pr {EVENT} {invoked_via} "{notes}"
+$HOME/agentic-workflow/hooks/log.sh {STORY-ID} 5-push-pr {EVENT} {invoked_via} "{notes}"
 ```
 
 - If stopping for user input: log `WAITING_FOR_USER` with note "uncommitted changes"
@@ -125,7 +125,7 @@ If the Jira issue cannot be fetched, warn the user but continue — use the stor
 Look for the most recent plan artifact at:
 
 ```
-$CURSOR_WORKFLOWS_REPO/artifacts/{STORY-ID}/YYYY-MM-DD-plan.md
+$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-plan.md
 ```
 
 If found, use the plan summary and AC mapping table to enrich the PR description. If not found, proceed without it.

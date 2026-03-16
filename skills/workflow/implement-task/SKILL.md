@@ -13,16 +13,17 @@ End-to-end orchestrator that chains requirement analysis, planning, implementati
 ## Usage
 
 - `/implement-task PROJ-123`
+- `/implement-task` (omit story ID to auto-detect from the current branch name)
 
 ---
 
 ## Configuration
 
-Read `$CURSOR_WORKFLOWS_REPO/constants.md` for Jira key pattern and artifact path conventions.
+Read `$HOME/agentic-workflow/constants.md` for Jira key pattern and artifact path conventions.
 
 **Repo context:**
 - Resolve the **target repo** once by matching CWD against repository `Local Path` entries in `constants.md`. All sub-commands inherit this context.
-- Artifacts are managed in `$CURSOR_WORKFLOWS_REPO` (the **workflows repo**). Code changes, git operations, and verification happen in the **target repo**.
+- Artifacts are managed in `$HOME/agentic-workflow` (the **workflows repo**). Code changes, git operations, and verification happen in the **target repo**.
 
 ---
 
@@ -33,17 +34,33 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for Jira key pattern and artifact pat
 For each sub-step, log start and end via Shell since the hooks only fire for the top-level command:
 
 ```bash
-$CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} {STEP} {EVENT} orchestrator "{notes}"
+$HOME/agentic-workflow/hooks/log.sh {STORY-ID} {STEP} {EVENT} orchestrator "{notes}"
 ```
 
 ---
 
 ## 0) Input validation (fail fast)
 
-Validate the provided Jira key:
+### 0.1 Resolve story ID
+
+If a Jira key was provided as an argument, use it directly.
+
+If **no** Jira key was provided, attempt to extract it from the current git branch name:
+
+```bash
+currentBranch=$(git rev-parse --abbrev-ref HEAD)
+```
+
+Match the branch name against the key pattern from `constants.md` (e.g. `(PROJ|TEAM)-\d+`). Use the first match as the story ID.
+
+If extraction fails (branch doesn't contain a recognizable key), ask the user for the correct issue key and stop.
+
+### 0.2 Validate key format
+
+Validate the resolved Jira key:
 - Must match the key pattern from `constants.md` (e.g. `(PROJ|TEAM)-\d+`)
 
-If missing/invalid, ask the user for the correct issue key and stop.
+If invalid, ask the user for the correct issue key and stop.
 
 ---
 

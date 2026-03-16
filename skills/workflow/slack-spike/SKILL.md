@@ -23,7 +23,7 @@ Examples:
 
 ## Configuration
 
-Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
+Read `$HOME/agentic-workflow/constants.md` for:
 
 - Jira cloud/project settings:
   - `Cloud ID`
@@ -42,7 +42,7 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 
 - Resolve the **target repo** by matching CWD against repository `Local Path` entries in `constants.md`.
 - All codebase research runs in the **target repo**.
-- Optional local artifacts for notes can be written under `$CURSOR_WORKFLOWS_REPO/artifacts/...`.
+- Optional local artifacts for notes can be written under `$HOME/agentic-workflow/artifacts/...`.
 - Confluence destination must be taken strictly from config values in `constants.md` (cloud, space, and parent page). Do not override from ad-hoc input.
 
 ---

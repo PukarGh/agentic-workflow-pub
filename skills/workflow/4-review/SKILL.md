@@ -13,12 +13,13 @@ Conduct a thorough automated and rule-based code review on the current feature b
 ## Usage
 
 - `/4-review PROJ-123`
+- `/4-review` (omit story ID to auto-detect from the current branch name)
 
 ---
 
 ## Configuration
 
-Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
+Read `$HOME/agentic-workflow/constants.md` for:
 
 - Active repository config (rules paths, verification command paths, base branch)
 - Artifact path conventions
@@ -27,7 +28,7 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 **Repo context:**
 
 - Resolve the **target repo** from CWD. All git operations (`git diff`, `git log`) and review commands run in the **target repo** on the current feature branch.
-- Artifacts are read from and written to `$CURSOR_WORKFLOWS_REPO/artifacts/...` (the **workflows repo**).
+- Artifacts are read from and written to `$HOME/agentic-workflow/artifacts/...` (the **workflows repo**).
 - Rules files referenced via `constants.md` are resolved relative to the **target repo root**.
 
 ---
@@ -37,7 +38,7 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 `STARTED` and `COMPLETED`/`FAILED` are logged automatically by hooks for standalone invocations. For orchestrator sub-steps or mid-step events, call the log script via Shell:
 
 ```bash
-$CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 4-review {EVENT} {invoked_via} "{notes}"
+$HOME/agentic-workflow/hooks/log.sh {STORY-ID} 4-review {EVENT} {invoked_via} "{notes}"
 ```
 
 - If stopping for user action: log `WAITING_FOR_USER` with note describing the block reason
@@ -47,13 +48,21 @@ $CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 4-review {EVENT} {invoked_via} "{
 
 ## 0) Input validation and setup
 
-### 0.1 Validate input
+### 0.1 Resolve and validate story ID
 
-Validate the provided Jira key:
+If a Jira key was provided as an argument, use it directly.
 
-- Must match the key pattern from `constants.md` (e.g. `(PROJ|TEAM)-\d+`)
+If **no** Jira key was provided, attempt to extract it from the current git branch name:
 
-If missing/invalid, ask the user for the correct issue key and stop.
+```bash
+currentBranch=$(git rev-parse --abbrev-ref HEAD)
+```
+
+Match the branch name against the key pattern from `constants.md` (e.g. `(PROJ|TEAM)-\d+`). Use the first match as the story ID.
+
+If extraction fails (branch doesn't contain a recognizable key), ask the user for the correct issue key and stop.
+
+Validate the resolved key matches the key pattern. If invalid, ask the user for the correct issue key and stop.
 
 ### 0.2 Validate branch
 
@@ -68,7 +77,7 @@ The branch name **must** contain the provided Jira key (case-insensitive). If th
 Look for existing artifacts at:
 
 ```
-$CURSOR_WORKFLOWS_REPO/artifacts/{STORY-ID}-*/
+$HOME/agentic-workflow/artifacts/{STORY-ID}-*/
 ```
 
 If no artifact directory exists for this story, warn the user but continue — the review can still proceed against the branch diff.
@@ -120,7 +129,7 @@ In a **single message**, launch the following three subagents in parallel using 
 - **Pass to subagent**:
   - Target repo path (resolved from `constants.md`)
   - Base branch for diffing
-- **Task**: From the target repo directory, run `coderabbit review --plain --base {BASE_BRANCH}`. The `--plain` flag is **required** — the default TUI requires TTY which is unavailable. Then run `ls -lt ~/.coderabbit/reviews/ | head -10` to find the latest review folder. Parse each `.json` file in that folder and extract all review comments. Return: (1) the full raw terminal output from the `coderabbit` command, (2) all parsed comments (file, line, severity, message) — or "Coderabbit: No issues found" if no review files exist. If the `coderabbit` command is not installed or fails, return the full error output and note the failure — do not block the review.
+- **Task**: From the target repo directory, run `coderabbit review --plain --base {BASE_BRANCH}`. The `--plain` flag is **required** — the default TUI requires TTY which is unavailable. With `--plain`, all review output is written directly to stdout. Capture the full stdout output and parse it for review comments (file, line, severity, message). Return: (1) the full raw stdout output from the `coderabbit` command, (2) all parsed comments — or "Coderabbit: No issues found" if the output contains no issues. If the `coderabbit` command is not installed or fails, return the full error output and note the failure — do not block the review.
 
 ### Subagent C — Tech Lead Review
 
@@ -176,7 +185,7 @@ Before producing a verdict, perform a manual self-review:
 Write the review results to:
 
 ```
-$CURSOR_WORKFLOWS_REPO/artifacts/{STORY-ID}/YYYY-MM-DD-review.md
+$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-review.md
 ```
 
 The artifact must contain:

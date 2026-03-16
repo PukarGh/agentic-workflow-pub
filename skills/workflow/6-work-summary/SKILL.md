@@ -12,7 +12,8 @@ Generate a Work Summary for a completed Jira ticket documenting approach, decisi
 
 ## Usage
 
-- `/6-work-summary {STORY-ID}`
+- `/6-work-summary PROJ-123`
+- `/6-work-summary` (omit story ID to auto-detect from the current branch name)
 
 This step runs automatically after `/5-push-pr` completes in the orchestrator flow.
 
@@ -20,13 +21,13 @@ This step runs automatically after `/5-push-pr` completes in the orchestrator fl
 
 ## Configuration
 
-Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
+Read `$HOME/agentic-workflow/constants.md` for:
 - Jira cloud ID and key pattern
 - Active repository context
 
 **Repo context:**
 - Resolve the **target repo** from CWD. All git operations run in the **target repo**.
-- Artifacts are read from `$CURSOR_WORKFLOWS_REPO/artifacts/...` (the **workflows repo**).
+- Artifacts are read from `$HOME/agentic-workflow/artifacts/...` (the **workflows repo**).
 
 ---
 
@@ -35,8 +36,26 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 `STARTED` and `COMPLETED`/`FAILED` are logged automatically by hooks for standalone invocations. For orchestrator sub-steps or mid-step events, call the log script via Shell:
 
 ```bash
-$CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 6-work-summary {EVENT} {invoked_via} "{notes}"
+$HOME/agentic-workflow/hooks/log.sh {STORY-ID} 6-work-summary {EVENT} {invoked_via} "{notes}"
 ```
+
+---
+
+## 0) Resolve story ID
+
+If a Jira key was provided as an argument, use it directly.
+
+If **no** Jira key was provided, attempt to extract it from the current git branch name:
+
+```bash
+currentBranch=$(git rev-parse --abbrev-ref HEAD)
+```
+
+Match the branch name against the key pattern from `constants.md` (e.g. `(PROJ|TEAM)-\d+`). Use the first match as the story ID.
+
+If extraction fails (branch doesn't contain a recognizable key), ask the user for the correct issue key and stop.
+
+Validate the resolved key matches the key pattern. If invalid, ask the user for the correct issue key and stop.
 
 ---
 
@@ -62,7 +81,7 @@ Extract:
 
 ### 2.1 Load artifacts
 
-Load available artifacts from `$CURSOR_WORKFLOWS_REPO/artifacts/{STORY-ID}/`:
+Load available artifacts from `$HOME/agentic-workflow/artifacts/{STORY-ID}/`:
 
 - `YYYY-MM-DD-requirements.md` — original requirements analysis
 - `YYYY-MM-DD-plan.md` — implementation plan

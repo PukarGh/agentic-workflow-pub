@@ -13,12 +13,13 @@ Create a verified implementation plan for a Jira story based on previously gathe
 ## Usage
 
 - `/2-plan PROJ-123`
+- `/2-plan` (omit story ID to auto-detect from the current branch name)
 
 ---
 
 ## Configuration
 
-Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
+Read `$HOME/agentic-workflow/constants.md` for:
 
 - Active repository config (rules paths, verification command paths)
 - Artifact path conventions
@@ -26,7 +27,7 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 **Repo context:**
 
 - Resolve the **target repo** from CWD. Rules files and verification command paths from `constants.md` are **relative to the target repo root** — resolve them as `{TARGET_REPO_PATH}/.cursor/rules/...` and `{TARGET_REPO_PATH}/.cursor/commands/...`.
-- Artifacts are read from and written to `$CURSOR_WORKFLOWS_REPO/artifacts/...` (the **workflows repo**).
+- Artifacts are read from and written to `$HOME/agentic-workflow/artifacts/...` (the **workflows repo**).
 
 ---
 
@@ -35,7 +36,7 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 `STARTED` and `COMPLETED`/`FAILED` are logged automatically by hooks for standalone invocations. For orchestrator sub-steps or mid-step events, call the log script via Shell:
 
 ```bash
-$CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 2-plan {EVENT} {invoked_via} "{notes}"
+$HOME/agentic-workflow/hooks/log.sh {STORY-ID} 2-plan {EVENT} {invoked_via} "{notes}"
 ```
 
 - If stopping for user approval: log `WAITING_FOR_USER` with note "plan presented to user"
@@ -43,12 +44,30 @@ $CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 2-plan {EVENT} {invoked_via} "{no
 
 ---
 
-## 0) Load requirements artifact
+## 0) Resolve story ID
+
+If a Jira key was provided as an argument, use it directly.
+
+If **no** Jira key was provided, attempt to extract it from the current git branch name:
+
+```bash
+currentBranch=$(git rev-parse --abbrev-ref HEAD)
+```
+
+Match the branch name against the key pattern from `constants.md` (e.g. `(PROJ|TEAM)-\d+`). Use the first match as the story ID.
+
+If extraction fails (branch doesn't contain a recognizable key), ask the user for the correct issue key and stop.
+
+Validate the resolved key matches the key pattern. If invalid, ask the user for the correct issue key and stop.
+
+---
+
+## 0.1) Load requirements artifact
 
 Look for the most recent requirements artifact at:
 
 ```
-$CURSOR_WORKFLOWS_REPO/artifacts/{STORY-ID}-{sluggified-story-title}/YYYY-MM-DD-requirements.md
+$HOME/agentic-workflow/artifacts/{STORY-ID}-{sluggified-story-title}/YYYY-MM-DD-requirements.md
 ```
 
 If not found, stop and instruct:
@@ -153,7 +172,7 @@ If any gate fails:
 Write the verified plan to:
 
 ```
-$CURSOR_WORKFLOWS_REPO/artifacts/{STORY-ID}/YYYY-MM-DD-plan.md
+$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-plan.md
 ```
 
 The artifact must contain:

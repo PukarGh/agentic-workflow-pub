@@ -13,18 +13,19 @@ Execute a previously verified implementation plan for a Jira story. Handles bran
 ## Usage
 
 - `/3-implement PROJ-123`
+- `/3-implement` (omit story ID to auto-detect from the current branch name)
 
 ---
 
 ## Configuration
 
-Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
+Read `$HOME/agentic-workflow/constants.md` for:
 - Active repository config (rules paths, base branch)
 - Artifact path conventions
 
 **Repo context:**
 - Resolve the **target repo** from CWD. All git operations (branch management), code changes, test creation, and verification commands (`yarn nx affected ...`) run in the **target repo**.
-- Artifacts are read from `$CURSOR_WORKFLOWS_REPO/artifacts/...` (the **workflows repo**).
+- Artifacts are read from `$HOME/agentic-workflow/artifacts/...` (the **workflows repo**).
 - Rules files referenced via `constants.md` are resolved relative to the **target repo root**.
 
 ---
@@ -34,17 +35,35 @@ Read `$CURSOR_WORKFLOWS_REPO/constants.md` for:
 `STARTED` and `COMPLETED`/`FAILED` are logged automatically by hooks for standalone invocations. For orchestrator sub-steps, call the log script via Shell:
 
 ```bash
-$CURSOR_WORKFLOWS_REPO/hooks/log.sh {STORY-ID} 3-implement {EVENT} {invoked_via} "{notes}"
+$HOME/agentic-workflow/hooks/log.sh {STORY-ID} 3-implement {EVENT} {invoked_via} "{notes}"
 ```
 
 ---
 
-## 0) Load plan artifact
+## 0) Resolve story ID
+
+If a Jira key was provided as an argument, use it directly.
+
+If **no** Jira key was provided, attempt to extract it from the current git branch name:
+
+```bash
+currentBranch=$(git rev-parse --abbrev-ref HEAD)
+```
+
+Match the branch name against the key pattern from `constants.md` (e.g. `(PROJ|TEAM)-\d+`). Use the first match as the story ID.
+
+If extraction fails (branch doesn't contain a recognizable key), ask the user for the correct issue key and stop.
+
+Validate the resolved key matches the key pattern. If invalid, ask the user for the correct issue key and stop.
+
+---
+
+## 0.1) Load plan artifact
 
 Look for the most recent plan artifact at:
 
 ```
-$CURSOR_WORKFLOWS_REPO/artifacts/{STORY-ID}/YYYY-MM-DD-plan.md
+$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-plan.md
 ```
 
 If not found, stop and instruct:
@@ -54,7 +73,7 @@ If not found, stop and instruct:
 Also load the requirements artifact at:
 
 ```
-$CURSOR_WORKFLOWS_REPO/artifacts/{STORY-ID}/YYYY-MM-DD-requirements.md
+$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-requirements.md
 ```
 
 Read both artifacts to extract:
