@@ -258,15 +258,89 @@ If the user chooses "Let me pick", ask a follow-up with checkboxes for each comm
 
 **Only proceed with the comments the user selected.**
 
-## Step 5: Implement Selected Type B Comments (Actionable Feedback)
+## Step 5: Plan How to Address Selected Comments
 
-For each selected actionable comment:
+For each selected comment, produce a concrete plan **before making any code changes**.
 
-### 5.1 — Plan the change
+### 5.1 — Analyze each comment
 
-Identify which files need modification, what the change is, and how it addresses the comment. Consider downstream effects (does changing this file affect other files in the diff?).
+For each selected Type B (actionable) comment:
 
-### 5.2 — Implement the change
+1. Read the referenced code (file + line range) and its surrounding context.
+2. Identify which files need modification.
+3. Describe the specific change to make and why it addresses the reviewer's feedback.
+4. Assess downstream effects — does changing this file affect other files in the diff? Are there consumers of the modified API/type/component?
+5. Note if tests need to be added or updated.
+
+For each selected Type A (question) comment:
+
+1. Read the referenced code and understand the intent.
+2. Draft the reply (1–3 sentences).
+
+### 5.2 — Write the plan artifact
+
+Determine the artifact directory (use the first directory matching `{STORY-ID}*` under `artifacts/`).
+
+**Before writing**, check if a `*-review-feedback-plan*.md` file already exists in the directory. If it does, **do not overwrite or modify it**. Instead, create a new file with a ` - pass N` suffix (see `constants.md` → Multi-pass naming for the convention).
+
+Write the plan to:
+
+```
+YYYY-MM-DD-4-review-feedback-plan.md            ← first pass (no existing file)
+YYYY-MM-DD-4-review-feedback-plan - pass 2.md   ← second pass
+```
+
+The plan artifact must contain:
+
+#### Plan Metadata
+
+```
+| Field     | Value              |
+|-----------|--------------------|
+| Story     | {STORY-ID}         |
+| PR        | #{PR_NUMBER}       |
+| Date      | {YYYY-MM-DD}       |
+```
+
+#### Planned Changes
+
+A table covering every selected comment:
+
+```
+| #   | Comment Summary         | Type       | Planned Action         | Files to Modify               | Downstream Impact         | Tests Needed |
+| --- | ----------------------- | ---------- | ---------------------- | ----------------------------- | ------------------------- | ------------ |
+| 1   | Missing null check      | Actionable | Add null guard          | src/utils/auth.ts             | None                      | Update existing test |
+| 2   | Why was lodash added?   | Question   | Reply with rationale   | —                             | —                         | —            |
+| 3   | Extract validation      | Actionable | Extract to helper fn   | src/api/handler.ts, utils.ts  | handler.test.ts           | Add unit test |
+```
+
+#### Draft Replies
+
+For each Type A (question) comment, include the draft reply text.
+
+#### Risk Assessment
+
+Flag any changes that:
+
+- Touch shared types/utils consumed by other parts of the codebase
+- Require test refactoring beyond the immediate scope
+- Could introduce regressions in areas not covered by the reviewer's comment
+
+### 5.3 — Present plan and STOP
+
+Present the plan to the user and ask for approval:
+
+> "Here's my plan for addressing the selected review comments. Review and approve, or let me know what to adjust."
+
+- If the user requests changes → revise the plan artifact and re-present.
+- If the user approves → proceed to Step 6.
+- Do **not** implement anything until the user approves.
+
+## Step 6: Implement Approved Plan
+
+For each selected actionable comment, following the approved plan:
+
+### 6.1 — Implement the change
 
 Make the code modifications following all project standards. Ensure:
 
@@ -274,17 +348,17 @@ Make the code modifications following all project standards. Ensure:
 - Changes are scoped to what the reviewer requested — no bonus fixes
 - Proper patterns, proper test coverage where applicable
 
-### 5.3 — Verify
+### 6.2 — Verify
 
 Run type-checks and linters on changed files. Fix any issues introduced.
 
-## Step 6: Handle Out-of-Scope but Valid Items
+## Step 7: Handle Out-of-Scope but Valid Items
 
 For each selected out-of-scope item classified as **Critical** or **Recommended**:
 
 1. **Flag to the user** that this is a real issue but not for this PR. Suggest creating a separate ticket or GitHub issue.
 
-## Step 7: Commit and Push
+## Step 8: Commit and Push
 
 If any code changes were made:
 
@@ -301,9 +375,9 @@ address PR review feedback
 
 **Do NOT post a top-level summary comment on the PR.** All feedback is communicated via individual replies only (Step 8).
 
-## Step 8: Reply to All Comments (after push)
+## Step 9: Reply to All Comments (after push)
 
-**This step happens AFTER committing and pushing.** Replies must include the commit ID so reviewers can verify the fix.
+**This step happens AFTER committing and pushing (Step 8).** Replies must include the commit ID so reviewers can verify the fix.
 
 Capture the commit hash first:
 
@@ -311,7 +385,7 @@ Capture the commit hash first:
 COMMIT_SHA=$(git rev-parse --short HEAD)
 ```
 
-### 8.1 — Reply to Type A Comments (Questions)
+### 9.1 — Reply to Type A Comments (Questions)
 
 For each selected question:
 
@@ -334,7 +408,7 @@ For general (non-review) comments, reply with:
 gh api repos/<owner>/<repo>/issues/<PR_NUMBER>/comments -f body="<response>"
 ```
 
-### 8.2 — Reply to Type B Comments (Actionable Feedback)
+### 9.2 — Reply to Type B Comments (Actionable Feedback)
 
 For each selected actionable comment that was **fixed**, reply with the commit ID:
 
@@ -342,7 +416,7 @@ For each selected actionable comment that was **fixed**, reply with the commit I
 gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f body="Addressed in ${COMMIT_SHA} — <brief description of what was changed>."
 ```
 
-### 8.3 — Reply to Out-of-Scope Items
+### 9.3 — Reply to Out-of-Scope Items
 
 For each selected out-of-scope item classified as **Critical** or **Recommended**:
 
@@ -350,7 +424,7 @@ For each selected out-of-scope item classified as **Critical** or **Recommended*
 gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f body="Valid point — this is out of scope for this PR. Created a separate issue to track this."
 ```
 
-### 8.4 — Reply to Remaining Items
+### 9.4 — Reply to Remaining Items
 
 For any out-of-scope **Good to Have** or **Nitpick** items, or in-scope **Nitpick** items that were not implemented, reply with a concise, respectful response:
 
@@ -364,7 +438,7 @@ gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f b
 
 **Fallback for all replies**: Use GitHub MCP `add_reply_to_pull_request_comment` if `gh` fails.
 
-## Step 9: Write Review Feedback Artifact
+## Step 10: Write Review Feedback Artifact
 
 Determine the artifact directory (use the first directory matching `{STORY-ID}*` under `artifacts/`).
 
@@ -440,7 +514,7 @@ If code changes were made, list the commit hash and per-file summary. If no code
 
 ## Rules
 
-1. **Never implement changes without user confirmation** from Step 4.
+1. **Never implement changes without user confirmation** from Step 4 (comment selection) and Step 5.3 (plan approval).
 2. **Never ignore a selected comment.** Every comment the user chose must be classified and acted on.
 3. **Never make changes outside what reviewers requested.** No bonus fixes.
 4. **Never argue with reviewers on Critical items.** Fix them.

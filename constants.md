@@ -76,6 +76,7 @@ Artifact paths are relative to the **workflows repo** (`$HOME/agentic-workflow`)
 | Requirements   | `artifacts/{STORY-ID}/YYYY-MM-DD-1-requirements.md` |
 | Plan           | `artifacts/{STORY-ID}/YYYY-MM-DD-2-plan.md`         |
 | Review         | `artifacts/{STORY-ID}/YYYY-MM-DD-3-review.md`       |
+| Review Feedback Plan | `artifacts/{STORY-ID}/YYYY-MM-DD-4-review-feedback-plan.md` |
 | Review Feedback| `artifacts/{STORY-ID}/YYYY-MM-DD-4-review-feedback.md` |
 | Tracking       | `artifacts/{STORY-ID}/tracking.md`                 |
 
@@ -88,6 +89,7 @@ Artifact filenames follow the pattern `YYYY-MM-DD-{N}-{step-name}.md` where `{N}
 | 1 | requirements      | `2026-03-15-1-requirements.md`       |
 | 2 | plan              | `2026-03-15-2-plan.md`               |
 | 3 | review            | `2026-03-15-3-review.md`             |
+| 4 | review-feedback-plan | `2026-03-15-4-review-feedback-plan.md` |
 | 4 | review-feedback   | `2026-03-15-4-review-feedback.md`    |
 
 This ensures files sort chronologically and by workflow step when viewed in a directory listing.
@@ -104,7 +106,7 @@ When writing an artifact, **never overwrite or modify an existing file**. Before
 
 To determine `N`: count files in the artifact directory whose names end with the same base name (e.g. `*-review*.md`). If the count is 0, use the base name. Otherwise, `N = count + 1`.
 
-This applies to all artifact types: `requirements`, `plan`, `review`, and `review-feedback`. It does **not** apply to `tracking.md` (which is append-only).
+This applies to all artifact types: `requirements`, `plan`, `review`, `review-feedback-plan`, and `review-feedback`. It does **not** apply to `tracking.md` (which is append-only).
 
 
 ---
