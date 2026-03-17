@@ -76,6 +76,7 @@ Artifact paths are relative to the **workflows repo** (`$HOME/agentic-workflow`)
 | Requirements   | `artifacts/{STORY-ID}/YYYY-MM-DD-requirements.md` |
 | Plan           | `artifacts/{STORY-ID}/YYYY-MM-DD-plan.md`         |
 | Review         | `artifacts/{STORY-ID}/YYYY-MM-DD-review.md`       |
+| Review Feedback| `artifacts/{STORY-ID}/YYYY-MM-DD-review-feedback.md` |
 | Tracking       | `artifacts/{STORY-ID}/tracking.md`                 |
 
 ### Multi-pass naming
@@ -90,7 +91,7 @@ When writing an artifact, **never overwrite or modify an existing file**. Before
 
 To determine `N`: count files in the artifact directory whose names end with the same base name (e.g. `*-review*.md`). If the count is 0, use the base name. Otherwise, `N = count + 1`.
 
-This applies to all artifact types: `requirements`, `plan`, and `review`. It does **not** apply to `tracking.md` (which is append-only).
+This applies to all artifact types: `requirements`, `plan`, `review`, and `review-feedback`. It does **not** apply to `tracking.md` (which is append-only).
 
 
 ---

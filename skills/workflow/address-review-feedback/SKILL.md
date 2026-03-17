@@ -7,6 +7,36 @@ description: Address PR review feedback by fetching comments from GitHub, classi
 
 Fetch review comments from a GitHub pull request, classify them, let the user select which ones to address, then implement the selected changes.
 
+---
+
+## Configuration
+
+Read `$HOME/agentic-workflow/constants.md` for:
+
+- Active repository config (rules paths, verification command paths, base branch)
+- Artifact path conventions (including multi-pass naming)
+- Jira cloud ID and key pattern
+
+**Repo context:**
+
+- Resolve the **target repo** from CWD. All git operations run in the **target repo** on the current feature branch.
+- Artifacts are written to `$HOME/agentic-workflow/artifacts/...` (the **workflows repo**).
+
+---
+
+## Tracking
+
+`STARTED` and `COMPLETED`/`FAILED` are logged automatically by hooks for standalone invocations. For orchestrator sub-steps or mid-step events, call the log script via Shell:
+
+```bash
+$HOME/agentic-workflow/hooks/log.sh {STORY-ID} address-review-feedback {EVENT} {invoked_via} "{notes}"
+```
+
+- If stopping for user selection: log `WAITING_FOR_USER` with note "presenting comments for selection"
+- On resuming after user input: log `RESUMED`
+
+---
+
 ## Step 0: Parse Input
 
 The user provides one of:
@@ -20,6 +50,16 @@ Extract the **owner**, **repo**, and **PR number** from the input:
 - If only a number is given, infer owner/repo from the current git remote: run `gh repo view --json owner,name --jq '.owner.login + "/" + .name'`.
 - If a URL is given, parse owner/repo/PR number from the URL path segments.
 - If a comment URL is given, also extract the comment ID from the fragment for later focus.
+
+### 0.1 — Resolve Story ID
+
+Extract the Jira story ID from the current branch name for artifact storage and tracking:
+
+```bash
+currentBranch=$(git rev-parse --abbrev-ref HEAD)
+```
+
+Match the branch name against the Jira key pattern from `constants.md` (`(PROJ|TEAM)-\d+`). If no match is found, ask the user for the story ID. Store it as `{STORY-ID}` for use in tracking and artifact steps.
 
 ## Step 1: Fetch PR Details and Review Comments
 
@@ -333,6 +373,80 @@ Use this format for the summary:
 ```
 
 **Fallback**: Use GitHub MCP tools if `gh` fails.
+
+## Step 10: Write Review Feedback Artifact
+
+Determine the artifact directory (use the first directory matching `{STORY-ID}*` under `artifacts/`).
+
+**Before writing**, check if a `*-review-feedback*.md` file already exists in the directory. If it does, **do not overwrite or modify it**. Instead, create a new file with a ` - pass N` suffix (see `constants.md` → Multi-pass naming for the convention).
+
+Write the artifact to:
+
+```
+YYYY-MM-DD-review-feedback.md            ← first pass (no existing file)
+YYYY-MM-DD-review-feedback - pass 2.md   ← second pass
+YYYY-MM-DD-review-feedback - pass 3.md   ← third pass, etc.
+```
+
+The artifact must contain:
+
+### PR Metadata
+
+```
+| Field     | Value              |
+|-----------|--------------------|
+| Story     | {STORY-ID}         |
+| PR        | #{PR_NUMBER}       |
+| Repo      | {owner}/{repo}     |
+| Branch    | {headRefName}      |
+| Base      | {baseRefName}      |
+| Date      | {YYYY-MM-DD}       |
+| PR URL    | {url}              |
+```
+
+### Comments Analyzed
+
+Full classification table for **all** comments fetched (not just selected ones):
+
+```
+| #   | File / Location         | Reviewer   | Type       | Severity    | Scope        | Recommended Action | Summary                        |
+| --- | ----------------------- | ---------- | ---------- | ----------- | ------------ | ------------------ | ------------------------------ |
+| 1   | src/utils/auth.ts:42    | @reviewer1 | Actionable | Critical    | In Scope     | Fix immediately    | Missing null check on token    |
+| 2   | src/api/handler.ts:15   | @reviewer2 | Question   | —           | —            | Reply              | Why was lodash added?          |
+```
+
+### User Selection
+
+Record which option the user chose (e.g. "All comments", "Critical & Recommended only", or the specific comment numbers selected).
+
+### Actions Taken
+
+For each selected comment, document:
+
+```
+| #   | Comment Summary         | Action           | Details                                                    |
+| --- | ----------------------- | ---------------- | ---------------------------------------------------------- |
+| 1   | Missing null check      | Fixed            | Added null guard in auth.ts:42                             |
+| 2   | Why was lodash added?   | Replied           | Explained dependency rationale                             |
+| 3   | Rename variable         | Replied (skipped) | Out of scope, acknowledged in reply                        |
+| 4   | Extract validation      | Jira ticket       | Created PROJ-456 for follow-up                             |
+```
+
+### Out-of-Scope Items
+
+If any out-of-scope items were flagged or Jira tickets created, list them:
+
+```
+| Comment Summary         | Severity    | Action                | Ticket / Notes         |
+| ----------------------- | ----------- | --------------------- | ---------------------- |
+| Extract validation      | Recommended | Created Jira ticket   | PROJ-456                |
+```
+
+If none, write "None."
+
+### Code Changes Summary
+
+If code changes were made, list the commit hash and per-file summary. If no code changes, write "No code changes made."
 
 ## Rules
 
