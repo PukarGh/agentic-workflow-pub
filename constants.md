@@ -73,21 +73,34 @@ Artifact paths are relative to the **workflows repo** (`$HOME/agentic-workflow`)
 | Key            | Value                                             |
 | -------------- | ------------------------------------------------- |
 | Base Directory | `$HOME/agentic-workflow/artifacts/`               |
-| Requirements   | `artifacts/{STORY-ID}/YYYY-MM-DD-requirements.md` |
-| Plan           | `artifacts/{STORY-ID}/YYYY-MM-DD-plan.md`         |
-| Review         | `artifacts/{STORY-ID}/YYYY-MM-DD-review.md`       |
-| Review Feedback| `artifacts/{STORY-ID}/YYYY-MM-DD-review-feedback.md` |
+| Requirements   | `artifacts/{STORY-ID}/YYYY-MM-DD-1-requirements.md` |
+| Plan           | `artifacts/{STORY-ID}/YYYY-MM-DD-2-plan.md`         |
+| Review         | `artifacts/{STORY-ID}/YYYY-MM-DD-3-review.md`       |
+| Review Feedback| `artifacts/{STORY-ID}/YYYY-MM-DD-4-review-feedback.md` |
 | Tracking       | `artifacts/{STORY-ID}/tracking.md`                 |
+
+### Naming convention
+
+Artifact filenames follow the pattern `YYYY-MM-DD-{N}-{step-name}.md` where `{N}` is the sequence number reflecting the workflow order:
+
+| N | Step Name         | Example Filename                     |
+|---|-------------------|--------------------------------------|
+| 1 | requirements      | `2026-03-15-1-requirements.md`       |
+| 2 | plan              | `2026-03-15-2-plan.md`               |
+| 3 | review            | `2026-03-15-3-review.md`             |
+| 4 | review-feedback   | `2026-03-15-4-review-feedback.md`    |
+
+This ensures files sort chronologically and by workflow step when viewed in a directory listing.
 
 ### Multi-pass naming
 
 When writing an artifact, **never overwrite or modify an existing file**. Before writing, check if a file matching the base name already exists in the artifact directory (regardless of date prefix). If it does, append ` - pass N` before the `.md` extension, where `N` is the next sequential pass number.
 
-| Pass | Filename example                         |
-| ---- | ---------------------------------------- |
-| 1st  | `YYYY-MM-DD-review.md` (no suffix)      |
-| 2nd  | `YYYY-MM-DD-review - pass 2.md`         |
-| 3rd  | `YYYY-MM-DD-review - pass 3.md`         |
+| Pass | Filename example                              |
+| ---- | --------------------------------------------- |
+| 1st  | `YYYY-MM-DD-3-review.md` (no suffix)         |
+| 2nd  | `YYYY-MM-DD-3-review - pass 2.md`            |
+| 3rd  | `YYYY-MM-DD-3-review - pass 3.md`            |
 
 To determine `N`: count files in the artifact directory whose names end with the same base name (e.g. `*-review*.md`). If the count is 0, use the base name. Otherwise, `N = count + 1`.
 
@@ -132,5 +145,20 @@ All **Cursor Rules** paths and **Verification Commands** paths listed under each
 | Code Quality   | `.cursor/commands/code-quality.md`   |
 | Security Audit | `.cursor/commands/security-audit.md` |
 | Pre-PR Review  | `.cursor/commands/pre-pr-review.md`  |
+
+
+### design-system
+
+
+| Key         | Value                                   |
+| ----------- | --------------------------------------- |
+| Local Path  | `$HOME/code/design-system`  |
+| Base Branch | `main`                                  |
+| GitHub Repo | `design-system`                         |
+
+
+**Cursor Rules:** (none)
+
+**Verification Commands:** (none)
 
 

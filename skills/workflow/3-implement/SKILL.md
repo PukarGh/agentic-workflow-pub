@@ -63,7 +63,7 @@ Validate the resolved key matches the key pattern. If invalid, ask the user for 
 Look for the most recent plan artifact at:
 
 ```
-$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-plan.md
+$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-2-plan.md
 ```
 
 If not found, stop and instruct:
@@ -73,7 +73,7 @@ If not found, stop and instruct:
 Also load the requirements artifact at:
 
 ```
-$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-requirements.md
+$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-1-requirements.md
 ```
 
 Read both artifacts to extract:

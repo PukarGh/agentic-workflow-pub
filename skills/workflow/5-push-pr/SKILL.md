@@ -125,7 +125,7 @@ If the Jira issue cannot be fetched, warn the user but continue — use the stor
 Look for the most recent plan artifact at:
 
 ```
-$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-plan.md
+$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-2-plan.md
 ```
 
 If found, use the plan summary and AC mapping table to enrich the PR description. If not found, proceed without it.

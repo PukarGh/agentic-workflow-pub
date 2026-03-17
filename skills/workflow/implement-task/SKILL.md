@@ -72,7 +72,7 @@ This step:
 - Fetches Jira story details and acceptance criteria
 - Scans the codebase for structural context
 - Resolves any AC ambiguities with the user
-- Writes the requirements artifact to `artifacts/{STORY-ID}/YYYY-MM-DD-requirements.md`
+- Writes the requirements artifact to `artifacts/{STORY-ID}/YYYY-MM-DD-1-requirements.md`
 
 **After completion:** Verify the requirements artifact was written. If any ambiguities required user input during research, confirm they have been resolved before proceeding.
 
@@ -88,7 +88,7 @@ This step:
 - Drafts an implementation plan
 - Runs verification gates (AC mapping, code quality, security)
 - Iterates until all gates pass
-- Writes the plan artifact to `artifacts/{STORY-ID}/YYYY-MM-DD-plan.md`
+- Writes the plan artifact to `artifacts/{STORY-ID}/YYYY-MM-DD-2-plan.md`
 
 **After completion:** Present the verified plan to the user and **STOP**.
 
@@ -127,7 +127,7 @@ This step:
 - Launches parallel review subagents (pre-PR rule check, Coderabbit, tech-lead review)
 - Performs a self-review pass
 - Synthesizes findings into a unified verdict
-- Writes the review artifact to `artifacts/{STORY-ID}/YYYY-MM-DD-review.md`
+- Writes the review artifact to `artifacts/{STORY-ID}/YYYY-MM-DD-3-review.md`
 
 **After completion:** Present the review verdict to the user.
 

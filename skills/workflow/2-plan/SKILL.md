@@ -67,7 +67,7 @@ Validate the resolved key matches the key pattern. If invalid, ask the user for 
 Look for the most recent requirements artifact at:
 
 ```
-$HOME/agentic-workflow/artifacts/{STORY-ID}-{sluggified-story-title}/YYYY-MM-DD-requirements.md
+$HOME/agentic-workflow/artifacts/{STORY-ID}-{sluggified-story-title}/YYYY-MM-DD-1-requirements.md
 ```
 
 If not found, stop and instruct:
@@ -176,9 +176,9 @@ Determine the artifact directory (use the first directory matching `{STORY-ID}*`
 Write the verified plan to:
 
 ```
-YYYY-MM-DD-plan.md            ← first pass (no existing file)
-YYYY-MM-DD-plan - pass 2.md   ← second pass
-YYYY-MM-DD-plan - pass 3.md   ← third pass, etc.
+YYYY-MM-DD-2-plan.md            ← first pass (no existing file)
+YYYY-MM-DD-2-plan - pass 2.md   ← second pass
+YYYY-MM-DD-2-plan - pass 3.md   ← third pass, etc.
 ```
 
 The artifact must contain:
@@ -220,7 +220,7 @@ The artifact must contain:
 
 Present the verified plan to the user and ask:
 
-> "Plan verified — all gates passed. Saved to `artifacts/{STORY-ID}/YYYY-MM-DD-plan.md`. Do you want me to implement this plan now? Run `/3-implement {STORY-ID}` to proceed."
+> "Plan verified — all gates passed. Saved to `artifacts/{STORY-ID}/YYYY-MM-DD-2-plan.md`. Do you want me to implement this plan now? Run `/3-implement {STORY-ID}` to proceed."
 
 - If the user asks for changes → amend the plan, re-run gates, and re-present.
 - Do **not** proceed to implementation from this command.

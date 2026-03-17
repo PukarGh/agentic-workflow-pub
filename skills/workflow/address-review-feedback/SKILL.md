@@ -373,9 +373,9 @@ Determine the artifact directory (use the first directory matching `{STORY-ID}*`
 Write the artifact to:
 
 ```
-YYYY-MM-DD-review-feedback.md            ← first pass (no existing file)
-YYYY-MM-DD-review-feedback - pass 2.md   ← second pass
-YYYY-MM-DD-review-feedback - pass 3.md   ← third pass, etc.
+YYYY-MM-DD-4-review-feedback.md            ← first pass (no existing file)
+YYYY-MM-DD-4-review-feedback - pass 2.md   ← second pass
+YYYY-MM-DD-4-review-feedback - pass 3.md   ← third pass, etc.
 ```
 
 The artifact must contain:

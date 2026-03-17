@@ -83,9 +83,9 @@ Extract:
 
 Load available artifacts from `$HOME/agentic-workflow/artifacts/{STORY-ID}/`:
 
-- `YYYY-MM-DD-requirements.md` — original requirements analysis
-- `YYYY-MM-DD-plan.md` — implementation plan
-- `YYYY-MM-DD-review.md` — pre-PR review findings
+- `YYYY-MM-DD-1-requirements.md` — original requirements analysis
+- `YYYY-MM-DD-2-plan.md` — implementation plan
+- `YYYY-MM-DD-3-review.md` — pre-PR review findings
 
 ### 2.2 Gather git context
 

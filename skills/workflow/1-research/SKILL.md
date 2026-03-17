@@ -250,9 +250,9 @@ $HOME/agentic-workflow/artifacts/{STORY-ID}-{slugified-story-title}/
 Write the output to:
 
 ```
-YYYY-MM-DD-requirements.md            ← first pass (no existing file)
-YYYY-MM-DD-requirements - pass 2.md   ← second pass
-YYYY-MM-DD-requirements - pass 3.md   ← third pass, etc.
+YYYY-MM-DD-1-requirements.md            ← first pass (no existing file)
+YYYY-MM-DD-1-requirements - pass 2.md   ← second pass
+YYYY-MM-DD-1-requirements - pass 3.md   ← third pass, etc.
 ```
 
 The artifact must contain:
@@ -294,4 +294,4 @@ List of related issues and their status.
 
 After writing the artifact, present the requirements summary to the user and confirm:
 
-> "Requirements gathered and saved to `artifacts/{STORY-ID}/YYYY-MM-DD-requirements.md`. Ready to proceed with `/2-plan {STORY-ID}`?"
+> "Requirements gathered and saved to `artifacts/{STORY-ID}/YYYY-MM-DD-1-requirements.md`. Ready to proceed with `/2-plan {STORY-ID}`?"

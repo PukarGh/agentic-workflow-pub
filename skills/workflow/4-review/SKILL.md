@@ -82,7 +82,7 @@ $HOME/agentic-workflow/artifacts/{STORY-ID}-*/
 
 If no artifact directory exists for this story, warn the user but continue — the review can still proceed against the branch diff.
 
-If a prior review artifact exists (`YYYY-MM-DD-review.md`), read it to determine the current `review_cycle` count. Increment from the last cycle.
+If a prior review artifact exists (`YYYY-MM-DD-3-review.md`), read it to determine the current `review_cycle` count. Increment from the last cycle.
 
 ### 0.4 Determine base branch
 
@@ -189,9 +189,9 @@ Determine the artifact directory (use the first directory matching `{STORY-ID}*`
 Write the review results to:
 
 ```
-YYYY-MM-DD-review.md            ← first pass (no existing file)
-YYYY-MM-DD-review - pass 2.md   ← second pass
-YYYY-MM-DD-review - pass 3.md   ← third pass, etc.
+YYYY-MM-DD-3-review.md            ← first pass (no existing file)
+YYYY-MM-DD-3-review - pass 2.md   ← second pass
+YYYY-MM-DD-3-review - pass 3.md   ← third pass, etc.
 ```
 
 The artifact must contain:
@@ -259,18 +259,18 @@ Based on the unified verdict:
 
 Output to the user:
 
-> "Review passed — all checks clean. Saved to `artifacts/{STORY-ID}/YYYY-MM-DD-review.md`. Ready to push and create a PR? Run `/5-push-pr` to proceed."
+> "Review passed — all checks clean. Saved to `artifacts/{STORY-ID}/YYYY-MM-DD-3-review.md`. Ready to push and create a PR? Run `/5-push-pr` to proceed."
 
 ### NEEDS ATTENTION
 
 Output to the user:
 
-> "Review has warnings — no critical issues. Saved to `artifacts/{STORY-ID}/YYYY-MM-DD-review.md`. Review the warnings and decide: proceed with `/5-push-pr` or address issues first."
+> "Review has warnings — no critical issues. Saved to `artifacts/{STORY-ID}/YYYY-MM-DD-3-review.md`. Review the warnings and decide: proceed with `/5-push-pr` or address issues first."
 
 ### NOT READY
 
 Output to the user:
 
-> "Review found critical issues that must be resolved. Saved to `artifacts/{STORY-ID}/YYYY-MM-DD-review.md`. Fix the 🔴 critical issues and re-run `/4-review {STORY-ID}`."
+> "Review found critical issues that must be resolved. Saved to `artifacts/{STORY-ID}/YYYY-MM-DD-3-review.md`. Fix the 🔴 critical issues and re-run `/4-review {STORY-ID}`."
 
 Do NOT proceed to push/PR from this command.
