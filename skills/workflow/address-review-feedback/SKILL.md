@@ -258,7 +258,60 @@ If the user chooses "Let me pick", ask a follow-up with checkboxes for each comm
 
 **Only proceed with the comments the user selected.**
 
-## Step 5: Handle Selected Type A Comments (Questions)
+## Step 5: Implement Selected Type B Comments (Actionable Feedback)
+
+For each selected actionable comment:
+
+### 5.1 — Plan the change
+
+Identify which files need modification, what the change is, and how it addresses the comment. Consider downstream effects (does changing this file affect other files in the diff?).
+
+### 5.2 — Implement the change
+
+Make the code modifications following all project standards. Ensure:
+
+- No new type errors or lint violations
+- Changes are scoped to what the reviewer requested — no bonus fixes
+- Proper patterns, proper test coverage where applicable
+
+### 5.3 — Verify
+
+Run type-checks and linters on changed files. Fix any issues introduced.
+
+## Step 6: Handle Out-of-Scope but Valid Items
+
+For each selected out-of-scope item classified as **Critical** or **Recommended**:
+
+1. **Flag to the user** that this is a real issue but not for this PR. Suggest creating a separate ticket or GitHub issue.
+
+## Step 7: Commit and Push
+
+If any code changes were made:
+
+1. Stage and commit all changes:
+
+```
+address PR review feedback
+
+- <one-line summary per change made>
+```
+
+2. Push the branch.
+3. Capture the pushed commit hash for use in replies: `git rev-parse HEAD`
+
+**Do NOT post a top-level summary comment on the PR.** All feedback is communicated via individual replies only (Step 8).
+
+## Step 8: Reply to All Comments (after push)
+
+**This step happens AFTER committing and pushing.** Replies must include the commit ID so reviewers can verify the fix.
+
+Capture the commit hash first:
+
+```bash
+COMMIT_SHA=$(git rev-parse --short HEAD)
+```
+
+### 8.1 — Reply to Type A Comments (Questions)
 
 For each selected question:
 
@@ -281,52 +334,23 @@ For general (non-review) comments, reply with:
 gh api repos/<owner>/<repo>/issues/<PR_NUMBER>/comments -f body="<response>"
 ```
 
-**Fallback**: Use GitHub MCP `add_reply_to_pull_request_comment` if `gh` fails.
+### 8.2 — Reply to Type B Comments (Actionable Feedback)
 
-## Step 6: Handle Selected Type B Comments (Actionable Feedback)
-
-For each selected actionable comment:
-
-### 6.1 — Plan the change
-
-Identify which files need modification, what the change is, and how it addresses the comment. Consider downstream effects (does changing this file affect other files in the diff?).
-
-### 6.2 — Implement the change
-
-Make the code modifications following all project standards. Ensure:
-
-- No new type errors or lint violations
-- Changes are scoped to what the reviewer requested — no bonus fixes
-- Proper patterns, proper test coverage where applicable
-
-### 6.3 — Verify
-
-Run type-checks and linters on changed files. Fix any issues introduced.
-
-### 6.4 — Reply to the comment
-
-Post a reply:
+For each selected actionable comment that was **fixed**, reply with the commit ID:
 
 ```bash
-gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f body="Addressed — <brief description of what was changed>."
+gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f body="Addressed in ${COMMIT_SHA} — <brief description of what was changed>."
 ```
 
-**Fallback**: Use GitHub MCP `add_reply_to_pull_request_comment` if `gh` fails.
-
-## Step 7: Handle Out-of-Scope but Valid Items
+### 8.3 — Reply to Out-of-Scope Items
 
 For each selected out-of-scope item classified as **Critical** or **Recommended**:
-
-1. **Flag to the user** that this is a real issue but not for this PR. Suggest creating a separate ticket or GitHub issue.
-2. **Reply to the PR comment**:
 
 ```bash
 gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f body="Valid point — this is out of scope for this PR. Created a separate issue to track this."
 ```
 
-**Fallback**: Use GitHub MCP `add_reply_to_pull_request_comment` if `gh` fails.
-
-## Step 8: Reply to Remaining Items
+### 8.4 — Reply to Remaining Items
 
 For any out-of-scope **Good to Have** or **Nitpick** items, or in-scope **Nitpick** items that were not implemented, reply with a concise, respectful response:
 
@@ -338,43 +362,9 @@ For any out-of-scope **Good to Have** or **Nitpick** items, or in-scope **Nitpic
 gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f body="<response>"
 ```
 
-**Fallback**: Use GitHub MCP `add_reply_to_pull_request_comment` if `gh` fails.
+**Fallback for all replies**: Use GitHub MCP `add_reply_to_pull_request_comment` if `gh` fails.
 
-## Step 9: Commit and Summarize
-
-If any code changes were made:
-
-1. Stage and commit all changes:
-
-```
-address PR review feedback
-
-- <one-line summary per change made>
-```
-
-2. Push the branch.
-
-After all selected comments are processed, post a single top-level PR comment summarizing actions taken:
-
-```bash
-gh api repos/<owner>/<repo>/issues/<PR_NUMBER>/comments -f body="<summary>"
-```
-
-Use this format for the summary:
-
-```markdown
-## Review Feedback Summary
-
-| #   | Comment             | Type       | Severity    | Scope        | Action Taken           |
-| --- | ------------------- | ---------- | ----------- | ------------ | ---------------------- |
-| 1   | {brief description} | Question   | —           | —            | Replied                |
-| 2   | {brief description} | Actionable | Critical    | In Scope     | Fixed                  |
-| 3   | {brief description} | Actionable | Recommended | Out of Scope | Skipped (not selected) |
-```
-
-**Fallback**: Use GitHub MCP tools if `gh` fails.
-
-## Step 10: Write Review Feedback Artifact
+## Step 9: Write Review Feedback Artifact
 
 Determine the artifact directory (use the first directory matching `{STORY-ID}*` under `artifacts/`).
 
