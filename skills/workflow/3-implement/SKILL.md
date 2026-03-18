@@ -60,21 +60,13 @@ Validate the resolved key matches the key pattern. If invalid, ask the user for 
 
 ## 0.1) Load plan artifact
 
-Look for the most recent plan artifact at:
-
-```
-$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-2-plan.md
-```
+Look for the most recent plan artifact in the artifact directory for this story (see `constants.md` → **Artifacts** for the naming convention).
 
 If not found, stop and instruct:
 
 > "No plan artifact found for {STORY-ID}. Run `/2-plan {STORY-ID}` first."
 
-Also load the requirements artifact at:
-
-```
-$HOME/agentic-workflow/artifacts/{STORY-ID}/YYYY-MM-DD-1-requirements.md
-```
+Also load the most recent requirements artifact from the same directory.
 
 Read both artifacts to extract:
 - Step-by-step implementation plan

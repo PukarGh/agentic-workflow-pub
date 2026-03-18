@@ -245,15 +245,7 @@ Determine the artifact directory:
 $HOME/agentic-workflow/artifacts/{STORY-ID}-{slugified-story-title}/
 ```
 
-**Before writing**, check if a `*-requirements*.md` file already exists in the directory. If it does, **do not overwrite or modify it**. Instead, create a new file with a ` - pass N` suffix (see `constants.md` → Multi-pass naming for the convention).
-
-Write the output to:
-
-```
-YYYY-MM-DD-1-requirements.md            ← first pass (no existing file)
-YYYY-MM-DD-1-requirements - pass 2.md   ← second pass
-YYYY-MM-DD-1-requirements - pass 3.md   ← third pass, etc.
-```
+**Before writing**, follow the artifact naming convention and multi-pass naming rules from `constants.md` → **Artifacts**. Check if a `*-requirements*.md` file already exists in the directory. If it does, **do not overwrite or modify it** — create a new file following the multi-pass naming convention.
 
 The artifact must contain:
 
@@ -294,4 +286,4 @@ List of related issues and their status.
 
 After writing the artifact, present the requirements summary to the user and confirm:
 
-> "Requirements gathered and saved to `artifacts/{STORY-ID}/YYYY-MM-DD-1-requirements.md`. Ready to proceed with `/2-plan {STORY-ID}`?"
+> "Requirements gathered and saved to `artifacts/{STORY-ID}/...`. Ready to proceed with `/2-plan {STORY-ID}`?"

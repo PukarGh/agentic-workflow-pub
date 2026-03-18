@@ -281,14 +281,7 @@ For each selected Type A (question) comment:
 
 Determine the artifact directory (use the first directory matching `{STORY-ID}*` under `artifacts/`).
 
-**Before writing**, check if a `*-review-feedback-plan*.md` file already exists in the directory. If it does, **do not overwrite or modify it**. Instead, create a new file with a ` - pass N` suffix (see `constants.md` → Multi-pass naming for the convention).
-
-Write the plan to:
-
-```
-YYYY-MM-DD-4-review-feedback-plan.md            ← first pass (no existing file)
-YYYY-MM-DD-4-review-feedback-plan - pass 2.md   ← second pass
-```
+**Before writing**, follow the artifact naming convention and multi-pass naming rules from `constants.md` → **Artifacts**. Check if a `*-review-feedback-plan*.md` file already exists in the directory. If it does, **do not overwrite or modify it** — create a new file following the multi-pass naming convention.
 
 The plan artifact must contain:
 
@@ -442,15 +435,7 @@ gh api repos/<owner>/<repo>/pulls/<PR_NUMBER>/comments/<comment_id>/replies -f b
 
 Determine the artifact directory (use the first directory matching `{STORY-ID}*` under `artifacts/`).
 
-**Before writing**, check if a `*-review-feedback*.md` file already exists in the directory. If it does, **do not overwrite or modify it**. Instead, create a new file with a ` - pass N` suffix (see `constants.md` → Multi-pass naming for the convention).
-
-Write the artifact to:
-
-```
-YYYY-MM-DD-4-review-feedback.md            ← first pass (no existing file)
-YYYY-MM-DD-4-review-feedback - pass 2.md   ← second pass
-YYYY-MM-DD-4-review-feedback - pass 3.md   ← third pass, etc.
-```
+**Before writing**, follow the artifact naming convention and multi-pass naming rules from `constants.md` → **Artifacts**. Check if a `*-review-feedback*.md` file already exists in the directory. If it does, **do not overwrite or modify it** — create a new file following the multi-pass naming convention.
 
 The artifact must contain:
 

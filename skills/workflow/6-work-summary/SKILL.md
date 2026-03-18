@@ -81,11 +81,11 @@ Extract:
 
 ### 2.1 Load artifacts
 
-Load available artifacts from `$HOME/agentic-workflow/artifacts/{STORY-ID}/`:
+Load available artifacts from the artifact directory for this story (see `constants.md` → **Artifacts** for the naming convention):
 
-- `YYYY-MM-DD-1-requirements.md` — original requirements analysis
-- `YYYY-MM-DD-2-plan.md` — implementation plan
-- `YYYY-MM-DD-3-review.md` — pre-PR review findings
+- Requirements artifact — original requirements analysis
+- Plan artifact — implementation plan
+- Review artifact — pre-PR review findings
 
 ### 2.2 Gather git context
 

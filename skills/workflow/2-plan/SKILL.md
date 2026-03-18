@@ -64,11 +64,7 @@ Validate the resolved key matches the key pattern. If invalid, ask the user for 
 
 ## 0.1) Load requirements artifact
 
-Look for the most recent requirements artifact at:
-
-```
-$HOME/agentic-workflow/artifacts/{STORY-ID}-{sluggified-story-title}/YYYY-MM-DD-1-requirements.md
-```
+Look for the most recent requirements artifact in the artifact directory for this story (see `constants.md` → **Artifacts** for the naming convention).
 
 If not found, stop and instruct:
 
@@ -171,15 +167,7 @@ If any gate fails:
 
 Determine the artifact directory (use the first directory matching `{STORY-ID}*` under `artifacts/`).
 
-**Before writing**, check if a `*-plan*.md` file already exists in the directory. If it does, **do not overwrite or modify it**. Instead, create a new file with a ` - pass N` suffix (see `constants.md` → Multi-pass naming for the convention).
-
-Write the verified plan to:
-
-```
-YYYY-MM-DD-2-plan.md            ← first pass (no existing file)
-YYYY-MM-DD-2-plan - pass 2.md   ← second pass
-YYYY-MM-DD-2-plan - pass 3.md   ← third pass, etc.
-```
+**Before writing**, follow the artifact naming convention and multi-pass naming rules from `constants.md` → **Artifacts**. Check if a `*-plan*.md` file already exists in the directory. If it does, **do not overwrite or modify it** — create a new file following the multi-pass naming convention.
 
 The artifact must contain:
 
@@ -220,7 +208,7 @@ The artifact must contain:
 
 Present the verified plan to the user and ask:
 
-> "Plan verified — all gates passed. Saved to `artifacts/{STORY-ID}/YYYY-MM-DD-2-plan.md`. Do you want me to implement this plan now? Run `/3-implement {STORY-ID}` to proceed."
+> "Plan verified — all gates passed. Saved to `artifacts/{STORY-ID}/...`. Do you want me to implement this plan now? Run `/3-implement {STORY-ID}` to proceed."
 
 - If the user asks for changes → amend the plan, re-run gates, and re-present.
 - Do **not** proceed to implementation from this command.

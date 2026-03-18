@@ -22,11 +22,11 @@ The agent determines the **target repo** by matching its current working directo
 ## Jira
 
 
-| Key         | Value                                  |
-| ----------- | -------------------------------------- |
-| Cloud ID    | `00000000-0000-0000-0000-000000000000` |
-| Key Pattern | `(PROJ|TEAM)-\d+`           |
-| Default Spike Project | `PROJ`                         |
+| Key                   | Value                                  |
+| --------------------- | -------------------------------------- |
+| Cloud ID              | `00000000-0000-0000-0000-000000000000` |
+| Key Pattern           | `(PROJ|TEAM)-\d+`                                  |
+| Default Spike Project | `PROJ`                                  |
 
 
 ---
@@ -34,12 +34,12 @@ The agent determines the **target repo** by matching its current working directo
 ## Confluence
 
 
-| Key                | Value                                  |
-| ------------------ | -------------------------------------- |
-| Cloud ID           | `00000000-0000-0000-0000-000000000000` |
-| Spike Space Key    | `SPACE`                                   |
-| Parent Page ID     | `123456789`                            |
-| Page Title Prefix  | `Spike:`                               |
+| Key               | Value                                  |
+| ----------------- | -------------------------------------- |
+| Cloud ID          | `00000000-0000-0000-0000-000000000000` |
+| Spike Space Key   | `SPACE`                                   |
+| Parent Page ID    | `123456789`                            |
+| Page Title Prefix | `Spike:`                               |
 
 
 ---
@@ -47,10 +47,10 @@ The agent determines the **target repo** by matching its current working directo
 ## Slack
 
 
-| Key                | Value               |
-| ------------------ | ------------------- |
-| Workspace Label    | `your-org`           |
-| Default Channel ID | ``                  |
+| Key                | Value     |
+| ------------------ | --------- |
+| Workspace Label    | `your-org` |
+| Default Channel ID | ``        |
 
 
 ---
@@ -70,44 +70,54 @@ The agent determines the **target repo** by matching its current working directo
 
 Artifact paths are relative to the **workflows repo** (`$HOME/agentic-workflow`), not the target repo.
 
-| Key            | Value                                             |
-| -------------- | ------------------------------------------------- |
-| Base Directory | `$HOME/agentic-workflow/artifacts/`               |
-| Requirements   | `artifacts/{STORY-ID}/YYYY-MM-DD-1-requirements.md` |
-| Plan           | `artifacts/{STORY-ID}/YYYY-MM-DD-2-plan.md`         |
-| Review         | `artifacts/{STORY-ID}/YYYY-MM-DD-3-review.md`       |
-| Review Feedback Plan | `artifacts/{STORY-ID}/YYYY-MM-DD-4-review-feedback-plan.md` |
-| Review Feedback| `artifacts/{STORY-ID}/YYYY-MM-DD-4-review-feedback.md` |
-| Tracking       | `artifacts/{STORY-ID}/tracking.md`                 |
+
+| Key                  | Value                                                       |
+| -------------------- | ----------------------------------------------------------- |
+| Base Directory       | `$HOME/agentic-workflow/artifacts/`        |
+| Requirements         | `artifacts/{STORY-ID}/YYYY-MM-DD-1-requirements ({n}).md`         |
+| Plan                 | `artifacts/{STORY-ID}/YYYY-MM-DD-2-plan ({n}).md`                 |
+| Review               | `artifacts/{STORY-ID}/YYYY-MM-DD-3-review ({n}).md`               |
+| Review Feedback Plan | `artifacts/{STORY-ID}/YYYY-MM-DD-4-review-feedback-plan ({n}).md` |
+| Review Feedback      | `artifacts/{STORY-ID}/YYYY-MM-DD-4-review-feedback ({n}).md`      |
+| Tracking             | `artifacts/{STORY-ID}/tracking.md`                          |
+
 
 ### Naming convention
 
-Artifact filenames follow the pattern `YYYY-MM-DD-{N}-{step-name}.md` where `{N}` is the sequence number reflecting the workflow order:
+Artifact filenames follow the pattern `YYYY-MM-DD-{N}-{step-name} ({n}).md` where:
 
-| N | Step Name         | Example Filename                     |
-|---|-------------------|--------------------------------------|
-| 1 | requirements      | `2026-03-15-1-requirements.md`       |
-| 2 | plan              | `2026-03-15-2-plan.md`               |
-| 3 | review            | `2026-03-15-3-review.md`             |
-| 4 | review-feedback-plan | `2026-03-15-4-review-feedback-plan.md` |
-| 4 | review-feedback   | `2026-03-15-4-review-feedback.md`    |
+- `YYYY-MM-DD` — the current date
+- `{N}` — a fixed sequence number reflecting the workflow order
+- `{step-name}` — the step slug
+- `{n}` — the pass number (always present, starting at 1)
+
+To determine `{n}`: count files in the artifact directory whose names match the same step name (e.g. `*-review*.md`). Set `n = count + 1`. The first artifact for a step is always `(1)`.
+
+
+| N   | Step Name            | Example Filename                             |
+| --- | -------------------- | -------------------------------------------- |
+| 1   | requirements         | `2026-03-15-1-requirements (1).md`           |
+| 2   | plan                 | `2026-03-15-2-plan (1).md`                   |
+| 3   | review               | `2026-03-15-3-review (1).md`                 |
+| 4   | review-feedback-plan | `2026-03-15-4-review-feedback-plan (1).md`   |
+| 4   | review-feedback      | `2026-03-15-4-review-feedback (1).md`        |
+
 
 This ensures files sort chronologically and by workflow step when viewed in a directory listing.
 
 ### Multi-pass naming
 
-When writing an artifact, **never overwrite or modify an existing file**. Before writing, check if a file matching the base name already exists in the artifact directory (regardless of date prefix). If it does, append ` - pass N` before the `.md` extension, where `N` is the next sequential pass number.
+When writing an artifact, **never overwrite or modify an existing file**. Before writing, count existing files matching the step name (e.g. `*-review*.md`) and use `n = count + 1`.
 
-| Pass | Filename example                              |
-| ---- | --------------------------------------------- |
-| 1st  | `YYYY-MM-DD-3-review.md` (no suffix)         |
-| 2nd  | `YYYY-MM-DD-3-review - pass 2.md`            |
-| 3rd  | `YYYY-MM-DD-3-review - pass 3.md`            |
 
-To determine `N`: count files in the artifact directory whose names end with the same base name (e.g. `*-review*.md`). If the count is 0, use the base name. Otherwise, `N = count + 1`.
+| Pass | Filename example                  |
+| ---- | --------------------------------- |
+| 1st  | `2026-03-15-3-review (1).md`     |
+| 2nd  | `2026-03-18-3-review (2).md`     |
+| 3rd  | `2026-03-20-3-review (3).md`     |
+
 
 This applies to all artifact types: `requirements`, `plan`, `review`, `review-feedback-plan`, and `review-feedback`. It does **not** apply to `tracking.md` (which is append-only).
-
 
 ---
 
@@ -152,15 +162,13 @@ All **Cursor Rules** paths and **Verification Commands** paths listed under each
 ### design-system
 
 
-| Key         | Value                                   |
-| ----------- | --------------------------------------- |
-| Local Path  | `$HOME/code/design-system`  |
-| Base Branch | `main`                                  |
-| GitHub Repo | `design-system`                         |
+| Key         | Value                                  |
+| ----------- | -------------------------------------- |
+| Local Path  | `$HOME/code/design-system` |
+| Base Branch | `main`                                 |
+| GitHub Repo | `design-system`                        |
 
 
 **Cursor Rules:** (none)
 
 **Verification Commands:** (none)
-
-
