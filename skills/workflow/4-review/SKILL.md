@@ -144,7 +144,7 @@ In a **single message**, launch the following three subagents in parallel using 
   - **Code quality** — TypeScript strictness (no `any`, `@ts-ignore`, `@ts-nocheck`), business logic extraction, error handling
   - **Cross-system impact** — shared types/utils consumer impact, event system changes, breaking changes
   - **Testing adequacy** — coverage of happy path, edge cases, error conditions per testing standards
-  Return: Risk Assessment table, all section findings, Action Items (Must Fix / Should Fix / Consider / Nice to Have), and final Verdict (APPROVE / APPROVE WITH CONDITIONS / REQUEST CHANGES / BLOCK).
+    Return: Risk Assessment table, all section findings, Action Items (Must Fix / Should Fix / Consider / Nice to Have), and final Verdict (APPROVE / APPROVE WITH CONDITIONS / REQUEST CHANGES / BLOCK).
 
 ---
 
@@ -177,7 +177,7 @@ Before producing a verdict, perform a manual self-review:
 
 ## 3) Write review artifact
 
-Determine the artifact directory (use the first directory matching `{STORY-ID}`* under `artifacts/`).
+Determine the artifact directory (use the first directory matching `{STORY-ID}`\* under `artifacts/`).
 
 **Before writing**, follow the artifact naming convention and multi-pass naming rules from `constants.md` → **Artifacts**. Check if a `*-review*.md` file already exists in the directory. If it does, **do not overwrite or modify it** — create a new file following the multi-pass naming convention.
 

@@ -21,18 +21,15 @@ The agent determines the **target repo** by matching its current working directo
 
 ## Jira
 
-
 | Key                   | Value                                  |
 | --------------------- | -------------------------------------- |
 | Cloud ID              | `00000000-0000-0000-0000-000000000000` |
 | Key Pattern           | `(PROJ|TEAM)-\d+`                                  |
 | Default Spike Project | `PROJ`                                  |
 
-
 ---
 
 ## Confluence
-
 
 | Key               | Value                                  |
 | ----------------- | -------------------------------------- |
@@ -41,28 +38,23 @@ The agent determines the **target repo** by matching its current working directo
 | Parent Page ID    | `123456789`                            |
 | Page Title Prefix | `Spike:`                               |
 
-
 ---
 
 ## Slack
-
 
 | Key                | Value     |
 | ------------------ | --------- |
 | Workspace Label    | `your-org` |
 | Default Channel ID | ``        |
 
-
 ---
 
 ## GitHub
-
 
 | Key          | Value         |
 | ------------ | ------------- |
 | Org          | `your-org`     |
 | Default Base | `development` |
-
 
 ---
 
@@ -70,17 +62,15 @@ The agent determines the **target repo** by matching its current working directo
 
 Artifact paths are relative to the **workflows repo** (`$HOME/agentic-workflow`), not the target repo.
 
-
-| Key                  | Value                                                       |
-| -------------------- | ----------------------------------------------------------- |
-| Base Directory       | `$HOME/agentic-workflow/artifacts/`   |
+| Key                  | Value                                                             |
+| -------------------- | ----------------------------------------------------------------- |
+| Base Directory       | `$HOME/agentic-workflow/artifacts/`              |
 | Requirements         | `artifacts/{STORY-ID}/YYYY-MM-DD-1-requirements ({n}).md`         |
 | Plan                 | `artifacts/{STORY-ID}/YYYY-MM-DD-2-plan ({n}).md`                 |
 | Review               | `artifacts/{STORY-ID}/YYYY-MM-DD-3-review ({n}).md`               |
 | Review Feedback Plan | `artifacts/{STORY-ID}/YYYY-MM-DD-4-review-feedback-plan ({n}).md` |
 | Review Feedback      | `artifacts/{STORY-ID}/YYYY-MM-DD-4-review-feedback ({n}).md`      |
-| Tracking             | `artifacts/{STORY-ID}/tracking.md`                          |
-
+| Tracking             | `artifacts/{STORY-ID}/tracking.md`                                |
 
 ### Naming convention
 
@@ -93,15 +83,13 @@ Artifact filenames follow the pattern `YYYY-MM-DD-{N}-{step-name} ({n}).md` wher
 
 To determine `{n}`: count files in the artifact directory whose names match the same step name (e.g. `*-review*.md`). Set `n = count + 1`. The first artifact for a step is always `(1)`.
 
-
-| N   | Step Name            | Example Filename                             |
-| --- | -------------------- | -------------------------------------------- |
-| 1   | requirements         | `2026-03-15-1-requirements (1).md`           |
-| 2   | plan                 | `2026-03-15-2-plan (1).md`                   |
-| 3   | review               | `2026-03-15-3-review (1).md`                 |
-| 4   | review-feedback-plan | `2026-03-15-4-review-feedback-plan (1).md`   |
-| 4   | review-feedback      | `2026-03-15-4-review-feedback (1).md`        |
-
+| N   | Step Name            | Example Filename                           |
+| --- | -------------------- | ------------------------------------------ |
+| 1   | requirements         | `2026-03-15-1-requirements (1).md`         |
+| 2   | plan                 | `2026-03-15-2-plan (1).md`                 |
+| 3   | review               | `2026-03-15-3-review (1).md`               |
+| 4   | review-feedback-plan | `2026-03-15-4-review-feedback-plan (1).md` |
+| 4   | review-feedback      | `2026-03-15-4-review-feedback (1).md`      |
 
 This ensures files sort chronologically and by workflow step when viewed in a directory listing.
 
@@ -109,13 +97,11 @@ This ensures files sort chronologically and by workflow step when viewed in a di
 
 When writing an artifact, **never overwrite or modify an existing file**. Before writing, count existing files matching the step name (e.g. `*-review*.md`) and use `n = count + 1`.
 
-
-| Pass | Filename example                  |
-| ---- | --------------------------------- |
-| 1st  | `2026-03-15-3-review (1).md`     |
-| 2nd  | `2026-03-18-3-review (2).md`     |
-| 3rd  | `2026-03-20-3-review (3).md`     |
-
+| Pass | Filename example             |
+| ---- | ---------------------------- |
+| 1st  | `2026-03-15-3-review (1).md` |
+| 2nd  | `2026-03-18-3-review (2).md` |
+| 3rd  | `2026-03-20-3-review (3).md` |
 
 This applies to all artifact types: `requirements`, `plan`, `review`, `review-feedback-plan`, and `review-feedback`. It does **not** apply to `tracking.md` (which is append-only).
 
@@ -127,16 +113,13 @@ All **Cursor Rules** paths and **Verification Commands** paths listed under each
 
 ### web-app
 
-
 | Key         | Value                               |
 | ----------- | ----------------------------------- |
 | Local Path  | `$HOME/code/web-app` |
 | Base Branch | `development`                       |
 | GitHub Repo | `web-app`                        |
 
-
 **Cursor Rules:**
-
 
 | Rule                      | Path                                                 |
 | ------------------------- | ---------------------------------------------------- |
@@ -147,9 +130,7 @@ All **Cursor Rules** paths and **Verification Commands** paths listed under each
 | Unit Testing Standards    | `.cursor/rules/unit-testing-standards.mdc`           |
 | NestJS API Architecture   | `.cursor/rules/api-nest-architecture.yaml` |
 
-
 **Verification Commands:**
-
 
 | Command        | Path                                 |
 | -------------- | ------------------------------------ |
@@ -158,16 +139,13 @@ All **Cursor Rules** paths and **Verification Commands** paths listed under each
 | Security Audit | `.cursor/commands/security-audit.md` |
 | Pre-PR Review  | `.cursor/commands/pre-pr-review.md`  |
 
-
 ### design-system
-
 
 | Key         | Value                                  |
 | ----------- | -------------------------------------- |
 | Local Path  | `$HOME/code/design-system` |
 | Base Branch | `main`                                 |
 | GitHub Repo | `design-system`                        |
-
 
 **Cursor Rules:** (none)
 
