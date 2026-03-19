@@ -73,7 +73,7 @@ Artifact paths are relative to the **workflows repo** (`$HOME/agentic-workflow`)
 
 | Key                  | Value                                                       |
 | -------------------- | ----------------------------------------------------------- |
-| Base Directory       | `$HOME/agentic-workflow/artifacts/`        |
+| Base Directory       | `$HOME/agentic-workflow/artifacts/`   |
 | Requirements         | `artifacts/{STORY-ID}/YYYY-MM-DD-1-requirements ({n}).md`         |
 | Plan                 | `artifacts/{STORY-ID}/YYYY-MM-DD-2-plan ({n}).md`                 |
 | Review               | `artifacts/{STORY-ID}/YYYY-MM-DD-3-review ({n}).md`               |

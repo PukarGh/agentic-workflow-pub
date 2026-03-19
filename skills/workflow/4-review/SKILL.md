@@ -1,8 +1,8 @@
 ---
-name: 4-review
+
+## name: 4-review
 description: Review Implementation — Pre-PR Code Review
 disable-model-invocation: true
----
 
 # Review Implementation — Pre-PR Code Review
 
@@ -106,12 +106,11 @@ If no changed files exist relative to the base branch, **STOP**:
 
 ## 1) Launch parallel review subagents
 
-In a **single message**, launch the following three subagents in parallel using the Task tool. All three are read-only and analyze the same changeset independently. **Do not proceed to Step 2 until all three subagents have returned.**
+In a **single message**, launch the following three subagents in parallel using the Task tool. All three analyze the same changeset independently. **Do not proceed to Step 2 until all three subagents have returned.**
 
 ### Subagent A — Pre-PR Review Command
 
 - **Type**: `generalPurpose`
-- **Readonly**: `true`
 - **Pass to subagent**:
   - Target repo path (resolved from `constants.md`)
   - Base branch for diffing
@@ -119,13 +118,11 @@ In a **single message**, launch the following three subagents in parallel using 
   - Pre-PR Review command path from `constants.md` (e.g. `.cursor/commands/pre-pr-review.md`)
   - All cursor rules file paths from `constants.md` for the active repo
 - **Task**: From the target repo directory, read the **Pre-PR Review command** file (path from `constants.md`, resolved relative to the target repo root) in full. This command file defines the structured review checklist — execute **every** sub-step it specifies. Additionally, run `git diff {base}...HEAD`, `git diff {base}...HEAD --stat`, `git diff {base}...HEAD --name-only`, and `git log --oneline {base}..HEAD`. Read all cursor rules files listed in `constants.md` for the active repo. Fetch the Jira ticket via Atlassian MCP and extract acceptance criteria. The pre-PR review command drives the review.
-
   Do NOT skip steps because a change seems small. Return all findings as a table (severity 🔴/🟡/🔵, issue, file:line, recommendation), a count per severity, and a verdict (READY FOR PR / NEEDS ATTENTION / NOT READY).
 
 ### Subagent B — Coderabbit Review
 
 - **Type**: `generalPurpose`
-- **Readonly**: `true`
 - **Pass to subagent**:
   - Target repo path (resolved from `constants.md`)
   - Base branch for diffing
@@ -134,7 +131,6 @@ In a **single message**, launch the following three subagents in parallel using 
 ### Subagent C — Tech Lead Review
 
 - **Type**: `generalPurpose`
-- **Readonly**: `true`
 - **Pass to subagent**:
   - Target repo path (resolved from `constants.md`)
   - Base branch for diffing
@@ -148,7 +144,6 @@ In a **single message**, launch the following three subagents in parallel using 
   - **Code quality** — TypeScript strictness (no `any`, `@ts-ignore`, `@ts-nocheck`), business logic extraction, error handling
   - **Cross-system impact** — shared types/utils consumer impact, event system changes, breaking changes
   - **Testing adequacy** — coverage of happy path, edge cases, error conditions per testing standards
-
   Return: Risk Assessment table, all section findings, Action Items (Must Fix / Should Fix / Consider / Nice to Have), and final Verdict (APPROVE / APPROVE WITH CONDITIONS / REQUEST CHANGES / BLOCK).
 
 ---
@@ -182,7 +177,7 @@ Before producing a verdict, perform a manual self-review:
 
 ## 3) Write review artifact
 
-Determine the artifact directory (use the first directory matching `{STORY-ID}*` under `artifacts/`).
+Determine the artifact directory (use the first directory matching `{STORY-ID}`* under `artifacts/`).
 
 **Before writing**, follow the artifact naming convention and multi-pass naming rules from `constants.md` → **Artifacts**. Check if a `*-review*.md` file already exists in the directory. If it does, **do not overwrite or modify it** — create a new file following the multi-pass naming convention.
 
