@@ -10,6 +10,24 @@ End-to-end orchestrator that chains requirement analysis, planning, implementati
 
 ---
 
+## ⛔ MANDATORY: User Confirmation Between Steps
+
+**DO NOT proceed from one step to the next without explicit user confirmation.** This is the single most important rule of the orchestrator.
+
+After completing **every** step (1 through 6), you **MUST**:
+
+1. Present the step's output/summary to the user.
+2. **STOP and wait** for the user to explicitly say "yes", "proceed", "continue", or equivalent.
+3. **Only then** move to the next step.
+
+**Never** assume the user wants to continue. **Never** chain steps automatically — even if everything passed, even if there are zero issues, even if the plan says "proceed to step N". The user must approve every transition.
+
+The only exception is Step 6 (Work Summary), which runs automatically after Step 5 per the workflow design.
+
+If you violate this rule, the entire workflow is considered failed.
+
+---
+
 ## Usage
 
 - `/implement-task PROJ-123`
