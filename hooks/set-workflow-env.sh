@@ -2,4 +2,5 @@
 set -euo pipefail
 
 cat > /dev/null
-echo '{"env":{"CURSOR_WORKFLOWS_REPO":"$HOME/agentic-workflow"},"continue":true}'
+WORKFLOWS_REPO="$(cd "$(dirname "$0")/.." && pwd -P)"
+echo "{\"env\":{\"CURSOR_WORKFLOWS_REPO\":\"$WORKFLOWS_REPO\"},\"continue\":true}"

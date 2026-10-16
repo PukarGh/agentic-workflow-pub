@@ -47,3 +47,9 @@ ln -sf $HOME/agentic-workflow/skills ~/.cursor/skills-cursor
 ln -sf $HOME/agentic-workflow/hooks ~/.cursor/hooks
 ln -sf $HOME/agentic-workflow/hooks.json ~/.cursor/hooks.json
 ```
+
+## Configuration
+
+`constants.md` ships with placeholder values (`your-org`, `PROJ`, zeroed Atlassian Cloud ID, `$HOME/...` paths). Replace them with your own Jira/Confluence/GitHub/Slack settings and local repo paths before use.
+
+`artifacts/` is gitignored — workflow outputs stay on your machine. Set `JIRA_BASE_URL` when running `server.js` to link story IDs to your Jira instance.

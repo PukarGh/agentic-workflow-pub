@@ -4,6 +4,7 @@ const path = require("path");
 
 const PORT = 3000;
 const ARTIFACTS_DIR = path.join(__dirname, "artifacts");
+const JIRA_BASE_URL = process.env.JIRA_BASE_URL || "https://your-org.atlassian.net";
 
 function getFiles(dir, base = "") {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -101,7 +102,7 @@ function renderList() {
         `<div class="step ${s.state}"><span class="step-dot"></span><span class="step-label">${s.label}</span></div>`
       ).join("")}</div>`;
     }
-    list += `<details class="card" data-dir="${escapeHtml(dir)}"><summary><div class="card-header"><div class="card-id-row"><a class="card-id" href="https://your-org.atlassian.net/browse/${encodeURIComponent(id)}" target="_blank">${escapeHtml(id)}</a></div>${titleHtml}</div></summary>${stepsHtml}<ol>`;
+    list += `<details class="card" data-dir="${escapeHtml(dir)}"><summary><div class="card-header"><div class="card-id-row"><a class="card-id" href="${JIRA_BASE_URL}/browse/${encodeURIComponent(id)}" target="_blank">${escapeHtml(id)}</a></div>${titleHtml}</div></summary>${stepsHtml}<ol>`;
     items.forEach((item, i) => {
       const name = path.basename(item);
       const urlPath = item.split(path.sep).map(encodeURIComponent).join("/");

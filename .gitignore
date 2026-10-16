@@ -1,0 +1,5 @@
+# Workflow artifacts are kept local/private — not tracked in this repo
+artifacts/
+plans/
+.tracking-state
+.DS_Store
